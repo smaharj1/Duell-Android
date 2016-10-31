@@ -3,6 +3,7 @@ package com.duell.view;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TableLayout;
@@ -65,14 +66,25 @@ public class StartPageLauncher extends AppCompatActivity {
                 v.setBackgroundColor(SELECTED_COLOR);
                 selectionMode = !selectionMode;
                 inputCoordinates = clickedPosition;
+                Log.v("OLA:" , diceClicked.getValue());
                 prevView = v;
             }
             else {
                 // User places the tile to the specified location.
                 desiredCoordinates = clickedPosition;
 
-                if (board.isLegal(inputCoordinates, desiredCoordinates, computerTurn))  {
+                // define directions
+                boolean[] directions = {true, true};
+
+                if (board.isLegal(inputCoordinates, desiredCoordinates, computerTurn) &&
+                        board.isPathGood(inputCoordinates, desiredCoordinates, directions))  {
                     message.setText("Move is legal");
+
+
+                    // TODO: Ask for the direction here
+                    board.move(inputCoordinates, desiredCoordinates, 'f');
+
+                    // TODO: Update tiles here
                 }
                 else {
                     message.setText("ILLEGAL MOVE");
@@ -85,6 +97,9 @@ public class StartPageLauncher extends AppCompatActivity {
                     prevView.setBackgroundColor(DEFAULT_COLOR);
                     prevView = null;
                 }
+
+                inputCoordinates = null;
+                desiredCoordinates = null;
                 selectionMode = !selectionMode;
             }
 

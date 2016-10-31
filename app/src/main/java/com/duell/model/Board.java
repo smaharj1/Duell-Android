@@ -144,7 +144,7 @@ public class Board {
             tempRow = oldRow + j;
 
             // This is if its the main location, just ignore this step.
-            if (tempRow + 1 == newRow && tempCol + 1 == newCol) continue;
+            if (tempRow == newRow && tempCol == newCol) continue;
 
             // If there is a die on the way, indicate that path as not possible.
             if (board[tempRow][tempCol] != null) correctPaths[0] = false;
@@ -169,7 +169,7 @@ public class Board {
             tempCol = oldCol + j;
 
             // If its the main location, just ignore this step.
-            if (tempRow + 1 == newRow && tempCol + 1 == newCol) continue;
+            if (tempRow == newRow && tempCol == newCol) continue;
 
             // If there is a dice on the way, indicate it as incorrect path.
             if (board[tempRow][tempCol] != null) correctPaths[1] = false;
@@ -195,7 +195,124 @@ public class Board {
         return correctPaths[0] || correctPaths[1];
     }
 
-    
+    public Dice move(Coordinates oldPos, Coordinates newPos, char direction) {
+        int oldRow = oldPos.getRow();
+        int oldCol = oldPos.getCol();
+        int newRow = newPos.getRow();
+        int newCol = newPos.getCol();
+
+        Dice diceAte = null;
+
+        // Holds if the player is computer or human.
+        boolean isComputer = board[oldRow][oldCol].isPlayerComputer();
+
+        // If the cell in the board is empty, return that it is empty.
+        int frontal = newRow - oldRow;
+        int side = newCol - oldCol;
+
+        if (!isComputer) {
+            if (direction == 'f') {
+                // Checks if the dice is rolled forward or backward and assigns the rolling accordingly.
+                for (int i = 0; i < Math.abs(frontal); i++) {
+                    if (frontal < 0) {
+                        board[oldRow][oldRow].moveForward();
+                    }else {
+                        board[oldRow][oldCol].moveBackward();
+                    }
+
+                }
+
+                // Checks if the dice is rolled right or left and assigns the rolling accordingly.
+                for (int i = 0; i < Math.abs(side); i++) {
+                    if (side > 0) {
+                        board[oldRow][oldCol].moveRight();
+                    }
+                    else {
+                        board[oldRow][oldCol].moveLeft();
+                    }
+                }
+            }
+            else {
+                // Checks if the dice is rolled right or left and assigns the rolling accordingly.
+                for (int i = 0; i < Math.abs(side); i++) {
+                    if (side > 0) {
+                        board[oldRow][oldCol].moveRight();
+                    }
+                    else {
+                        board[oldRow][oldCol].moveLeft();
+                    }
+                }
+
+                // Checks if the dice is rolled forward or backward and assigns the rolling accordingly.
+                for (int i = 0; i < Math.abs(frontal); i++) {
+                    if (frontal < 0) {
+                        board[oldRow][oldCol].moveForward();
+                    }
+                    else {
+                        board[oldRow][oldCol].moveBackward();
+                    }
+                }
+            }
+        }
+        else {
+            if (direction == 'f') {
+                // Checks if the dice is rolled forward or backward and assigns the rolling accordingly.
+                for (int i = 0; i < Math.abs(frontal); i++) {
+                    if (frontal > 0) {
+                        board[oldRow][oldCol].moveForward();
+                    }
+                    else {
+                        board[oldRow][oldCol].moveBackward();
+                    }
+                }
+
+                // Checks if the dice is rolled right or left and assigns the rolling accordingly.
+                for (int i = 0; i < Math.abs(side); i++) {
+                    if (side < 0) {
+                        board[oldRow][oldCol].moveRight();
+                    }
+                    else {
+                        board[oldRow][oldCol].moveLeft();
+                    }
+                }
+            }
+            else {
+                // Checks if the dice is rolled right or left and assigns the rolling accordingly.
+                for (int i = 0; i < Math.abs(side); i++) {
+                    if (side < 0) {
+                        board[oldRow][oldCol].moveRight();
+                    }
+                    else {
+                        board[oldRow][oldCol].moveLeft();
+                    }
+
+                }
+
+                // Checks if the dice is rolled forward or backward and assigns the rolling accordingly.
+                for (int i = 0; i < Math.abs(frontal); i++) {
+                    if (frontal >0) {
+                        board[oldRow][oldCol].moveForward();
+                    }
+                    else {
+                        board[oldRow][oldCol].moveBackward();
+                    }
+                }
+            }
+        }
+
+        // Adds the dice to the Cell and removes the dice from previous location.
+        if (board[newRow][newCol] != null) {
+            //cout << "Dice is eaten!" << endl << endl;
+            diceAte = board[newRow][newCol];
+            board[newRow][newCol] = null;
+        }
+        board[newRow][newCol]= board[oldRow][oldRow];
+        board[oldRow][oldCol]= null;
+
+        return diceAte;
+    }
+
+
 
     public Dice getDiceAt(int row, int col) {
         if (board[row][col] == null) return null;
