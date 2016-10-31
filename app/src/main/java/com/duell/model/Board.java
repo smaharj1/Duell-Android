@@ -1,5 +1,7 @@
 package com.duell.model;
 
+import android.util.Log;
+
 /**
  * Created by Sujil on 10/30/2016.
  */
@@ -17,7 +19,7 @@ public class Board {
         // Goes through the whole board of cell and initializes the board.
         for (int i = 0; i < TOTAL_ROWS; i++) {
             for (int j = 0; j < TOTAL_COLUMNS; j++) {
-                Dice d;
+
                 if (i == 0) {
                     board[i][j] = new Dice("C21");
                 }
@@ -74,6 +76,9 @@ public class Board {
 
     // Checks if the move is legal in terms of user's turn and who the user is replacing
     public boolean isLegal(Coordinates oldPos, Coordinates newPos, boolean isPlayerComputer) {
+        Log.v("OLA-BOARD: ", "Checking for " + getDiceAt(oldPos).getValue());
+
+
         int oldRow = oldPos.getRow();
         int oldCol = oldPos.getCol();
         int newRow = newPos.getRow();
@@ -215,7 +220,8 @@ public class Board {
                 // Checks if the dice is rolled forward or backward and assigns the rolling accordingly.
                 for (int i = 0; i < Math.abs(frontal); i++) {
                     if (frontal < 0) {
-                        board[oldRow][oldRow].moveForward();
+                        board[oldRow][oldCol].moveForward();
+
                     }else {
                         board[oldRow][oldCol].moveBackward();
                     }
@@ -306,13 +312,19 @@ public class Board {
             diceAte = board[newRow][newCol];
             board[newRow][newCol] = null;
         }
-        board[newRow][newCol]= board[oldRow][oldRow];
+
+        board[newRow][newCol] = board[oldRow][oldCol];
         board[oldRow][oldCol]= null;
+        //Log.v("OLA-BOARD", "new row and col is: " + newRow + " " +newCol);
 
         return diceAte;
     }
 
+    public Dice getDiceAt(Coordinates given) {
+        if (board[given.getRow()][given.getCol()] == null) return null;
 
+        return board[given.getRow()][given.getCol()];
+    }
 
     public Dice getDiceAt(int row, int col) {
         if (board[row][col] == null) return null;

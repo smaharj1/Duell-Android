@@ -50,8 +50,8 @@ public class StartPageLauncher extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Coordinates clickedPosition = (Coordinates) v.getTag();
-
-            Dice diceClicked = board.getDiceAt(clickedPosition.getRow(),clickedPosition.getCol());
+            Log.v("OLA: " , "Clicked pos: " + clickedPosition.getRow() + " " + clickedPosition.getCol());
+            Dice diceClicked = board.getDiceAt(clickedPosition);
 
             if (computerTurn) {
                 message.setText("Not your turn playa!");
@@ -80,15 +80,15 @@ public class StartPageLauncher extends AppCompatActivity {
                         board.isPathGood(inputCoordinates, desiredCoordinates, directions))  {
                     message.setText("Move is legal");
 
-
                     // TODO: Ask for the direction here
                     board.move(inputCoordinates, desiredCoordinates, 'f');
+                    updateView(inputCoordinates, desiredCoordinates);
 
                     // TODO: Update tiles here
                 }
                 else {
                     message.setText("ILLEGAL MOVE");
-                    return;
+                    //return;
                 }
 
                 //Toast.makeText(getApplicationContext(), "Selected: " + inputCoordinates.getString() + " desired: " + desiredCoordinates.getString(), Toast.LENGTH_LONG).show();
@@ -108,6 +108,15 @@ public class StartPageLauncher extends AppCompatActivity {
     };
 
 
+    public void updateView(Coordinates oldPos, Coordinates newPos) {
+        TextView tempView = findViewInTable(oldPos);
+        tempView.setText("");
+        tempView.setBackgroundColor(DEFAULT_COLOR);
+
+        tempView = findViewInTable(newPos);
+        tempView.setText(board.getDiceAt(newPos).getValue());
+
+    }
     private TextView findViewInTable(Coordinates inputCoordinates) {
         TableLayout tableLayout = (TableLayout) findViewById(R.id.givenGrid);
 

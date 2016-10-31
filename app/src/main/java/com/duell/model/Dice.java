@@ -1,5 +1,7 @@
 package com.duell.model;
 
+import android.util.Log;
+
 /**
  * Created by Sujil on 10/30/2016.
  */
