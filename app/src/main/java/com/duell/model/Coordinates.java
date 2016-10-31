@@ -17,4 +17,8 @@ public class Coordinates {
     public int getRow() { return row;}
 
     public int getCol() { return col;}
+
+    public String getString() {
+        return row + "," + col;
+    }
 }
