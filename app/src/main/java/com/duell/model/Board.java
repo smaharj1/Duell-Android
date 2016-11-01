@@ -12,7 +12,6 @@ public class Board {
 
     private boolean isGodMode = false;
 
-
     private Dice board[][] = new Dice[TOTAL_ROWS][TOTAL_COLUMNS];
 
     public Board() {
@@ -54,6 +53,9 @@ public class Board {
 
         //isGodMode = false;
     }
+
+    public int getTotalRows() { return TOTAL_ROWS;}
+    public int getTotalColumns() { return TOTAL_COLUMNS;}
 
     /**
         Sets the board.

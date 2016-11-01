@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Please enter the name of the file"
+        android:id="@+id/textview4"
+        android:layout_gravity="center_horizontal" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="225dp"
+        android:id="@+id/filename"
+        android:inputType="text"
+        android:textColor="#ff282d"
+        android:textStyle="bold"
+        android:layout_weight="0.17"
+        android:textSize="36sp"
+        android:typeface="normal"
+        android:textAlignment="center" />
+</LinearLayout>

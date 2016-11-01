@@ -16,6 +16,8 @@ import com.duell.model.Coordinates;
 import com.duell.model.Dice;
 import com.duell.model.FileHandler;
 
+import java.io.FileNotFoundException;
+
 public class GamePlay extends AppCompatActivity {
     private final int DEFAULT_COLOR = Color.parseColor("#FCEBB6");
     private final int SELECTED_COLOR = Color.parseColor("#D3D3D3");
@@ -42,18 +44,39 @@ public class GamePlay extends AppCompatActivity {
         // Handles the file name given and reads the board
         FileHandler fileHandler = new FileHandler(getApplicationContext());
 
-        if (fileHandler.openGame("one") ) {
+        board = new Board();
+
+        String gameType = getIntent().getStringExtra(AppLauncher.MESSAGE_GAME);
+
+        if (gameType.equalsIgnoreCase("new")) {
+            // Set up the board.
+            board = new Board();
+            humanScore = 0;
+            computerScore = 0;
+
+            String temp = getIntent().getStringExtra(AppLauncher.MESSAGE_TURN);
+
+            // Set the turn according to what we got from the coin toss
+            if (temp.equals("human")) {
+                computerTurn = false;
+            }
+            else computerTurn = true;
+        }
+        else {
+            fileHandler.openGame(getIntent().getStringExtra(AppLauncher.MESSAGE_FILENAME));
             board = fileHandler.getBoard();
             humanScore = fileHandler.getHumanScore();
             computerScore = fileHandler.getComputerScore();
             computerTurn = fileHandler.getIfComputerTurn();
         }
-        else {
-            // Set up the board.
-            board = new Board();
-            humanScore = 0;
-            computerScore = 0;
-        }
+
+//
+//        try {
+//            fileHandler.saveGame("a2233", board, true, 0,0);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+
 
         message = (TextView) findViewById(R.id.message);
 
