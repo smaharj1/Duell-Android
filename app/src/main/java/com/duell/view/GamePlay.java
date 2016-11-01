@@ -9,7 +9,6 @@ import android.view.View;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.duell.R;
 import com.duell.model.Board;
@@ -17,9 +16,7 @@ import com.duell.model.Coordinates;
 import com.duell.model.Dice;
 import com.duell.model.FileHandler;
 
-import org.w3c.dom.Text;
-
-public class StartPageLauncher extends AppCompatActivity {
+public class GamePlay extends AppCompatActivity {
     private final int DEFAULT_COLOR = Color.parseColor("#FCEBB6");
     private final int SELECTED_COLOR = Color.parseColor("#D3D3D3");
     private Board board;
@@ -40,7 +37,7 @@ public class StartPageLauncher extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_start_page_launcher);
+        setContentView(R.layout.activity_game_play);
 
         // Handles the file name given and reads the board
         FileHandler fileHandler = new FileHandler(getApplicationContext());
