@@ -15,6 +15,7 @@ import com.duell.R;
 import com.duell.model.Board;
 import com.duell.model.Coordinates;
 import com.duell.model.Dice;
+import com.duell.model.FileHandler;
 
 import org.w3c.dom.Text;
 
@@ -31,13 +32,31 @@ public class StartPageLauncher extends AppCompatActivity {
     private TextView message;
     private View prevView;
 
+
+    // Tracks the total score of human and computer
+    private int humanScore = 0;
+    private int computerScore = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_page_launcher);
 
-        // Set up the board.
-        board = new Board();
+        // Handles the file name given and reads the board
+        FileHandler fileHandler = new FileHandler(getApplicationContext());
+
+        if (fileHandler.openGame("one") ) {
+            board = fileHandler.getBoard();
+            humanScore = fileHandler.getHumanScore();
+            computerScore = fileHandler.getComputerScore();
+            computerTurn = fileHandler.getIfComputerTurn();
+        }
+        else {
+            // Set up the board.
+            board = new Board();
+            humanScore = 0;
+            computerScore = 0;
+        }
 
         message = (TextView) findViewById(R.id.message);
 
@@ -88,7 +107,7 @@ public class StartPageLauncher extends AppCompatActivity {
                 }
                 else {
                     message.setText("ILLEGAL MOVE");
-                    //return;
+
                 }
 
                 //Toast.makeText(getApplicationContext(), "Selected: " + inputCoordinates.getString() + " desired: " + desiredCoordinates.getString(), Toast.LENGTH_LONG).show();
@@ -117,6 +136,8 @@ public class StartPageLauncher extends AppCompatActivity {
         tempView.setText(board.getDiceAt(newPos).getValue());
 
     }
+
+
     private TextView findViewInTable(Coordinates inputCoordinates) {
         TableLayout tableLayout = (TableLayout) findViewById(R.id.givenGrid);
 

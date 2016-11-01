@@ -1,0 +1,15 @@
+Board:
+  C56  0   0   0   0   0   0   0   0
+   0  H36 C54  0  C11  0  C23  0   0
+   0   0   0   0   0  C14 H13  0  H62
+   0   0  C62  0   0   0  H46  0   0
+   0   0   0   0  C41  0   0   0   0
+   0   0  H23  0  H42  0  C42  0   0
+   0   0   0   0   0   0   0   0   0
+  C35 H12  0   0  H11  0   0   0  H56
+
+Computer Wins: 2
+
+Human Wins: 1
+
+Next Player: Human

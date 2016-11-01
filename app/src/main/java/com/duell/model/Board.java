@@ -62,10 +62,11 @@ public class Board {
         // Loops through each cell and stores the dices.
         for (int i = 0; i < TOTAL_ROWS; i++) {
             for (int j = 0; j < TOTAL_COLUMNS; j++) {
-                if (givenBoard[i][j] == "0") {
+                if (givenBoard[i][j].contains("0") || givenBoard[i][j].isEmpty()) {
                     board[i][j] = null;
                 }
                 else {
+                    System.out.println("Board: " + givenBoard[i][j]);
                     board[i][j] = new Dice(givenBoard[i][j]);
                 }
             }
