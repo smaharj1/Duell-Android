@@ -14,11 +14,32 @@ public class Board {
 
     private Dice board[][] = new Dice[TOTAL_ROWS][TOTAL_COLUMNS];
 
+    public Board(int[] keys) {
+        // Goes through the whole board of cell and initializes the board.
+        for (int i = 0; i < TOTAL_ROWS; i++) {
+            for (int j = 0; j < TOTAL_COLUMNS; j++) {
+                if (i == 0) {
+                    Dice tempDice = computeDice(keys[j],j, true);
+                    board[i][j] = tempDice;
+                }
+                else if (i == TOTAL_ROWS - 1) {
+                    Dice tempDice = computeDice(keys[j],j, false);
+                    board[i][j] = tempDice;
+                }
+                else {
+                    board[i][j] = null;
+                }
+            }
+        }
+
+        // Initializes god mode as false.
+        //isGodMode = false;
+    }
+
     public Board() {
         // Goes through the whole board of cell and initializes the board.
         for (int i = 0; i < TOTAL_ROWS; i++) {
             for (int j = 0; j < TOTAL_COLUMNS; j++) {
-
                 if (i == 0) {
                     board[i][j] = new Dice("C21");
                 }
@@ -33,6 +54,18 @@ public class Board {
 
         // Initializes god mode as false.
         //isGodMode = false;
+    }
+
+    public Dice computeDice(int top, int index, boolean isComputer) {
+        int right = 3;
+        int front = Dice.computeFrontFace(top,right);
+
+        if (index == TOTAL_COLUMNS/2) {
+            return new Dice(isComputer,1,1,1);
+        }
+        else {
+            return new Dice(isComputer, top, right, 7-front);
+        }
     }
 
     public Board(Dice[] humanInitDices, Dice[] botInitDices) {
@@ -114,7 +147,20 @@ public class Board {
         return true;
     }
 
-    //TODO: not checked.
+    public boolean bothPathPossible(Coordinates oldPos, Coordinates newPos) {
+        int oldRow = oldPos.getRow();
+        int oldCol = oldPos.getCol();
+        int newRow = newPos.getRow();
+        int newCol = newPos.getCol();
+
+        int rowDiff = Math.abs(oldRow-newRow);
+        int colDiff = Math.abs(oldCol - newCol);
+
+        if (rowDiff == 0 || colDiff == 0) return false;
+        return true;
+    }
+
+
     //To check if the path is good. It checks if there are any distractions on the way.
     public boolean isPathGood(Coordinates oldPos, Coordinates newPos, boolean[] correctPaths) {
         int oldRow = oldPos.getRow();

@@ -5,4 +5,14 @@ package com.duell.model;
  */
 
 public class Computer extends Player {
+
+    public Computer(Board board) {
+        super(board);
+    }
+
+    @Override
+    public Dice play() {
+
+        return null;
+    }
 }

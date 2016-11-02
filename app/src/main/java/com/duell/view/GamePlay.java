@@ -1,26 +1,43 @@
 package com.duell.view;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.duell.R;
 import com.duell.model.Board;
+import com.duell.model.Computer;
 import com.duell.model.Coordinates;
 import com.duell.model.Dice;
 import com.duell.model.FileHandler;
+import com.duell.model.Human;
+import com.duell.model.Player;
+
+import org.w3c.dom.Text;
 
 import java.io.FileNotFoundException;
 
 public class GamePlay extends AppCompatActivity {
     private final int DEFAULT_COLOR = Color.parseColor("#FCEBB6");
     private final int SELECTED_COLOR = Color.parseColor("#D3D3D3");
+    private final int INVALID_SELECTION = -1;
+    private final char INVALID_DIRECTION = 'a';
+    private final String LATERAL_FIRST = "lateral first";
+    private final String COMPUTER_TURN = "Computer";
+    private final String HUMAN_TURN = "You";
+
+
+    private final String filename = "savedGame";
+
     private Board board;
 
     private boolean selectionMode = true;
@@ -31,10 +48,15 @@ public class GamePlay extends AppCompatActivity {
     private TextView message;
     private View prevView;
 
+    private Player human;
+    private Player computer;
+
 
     // Tracks the total score of human and computer
     private int humanScore = 0;
     private int computerScore = 0;
+
+    FileHandler fileHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,17 +64,16 @@ public class GamePlay extends AppCompatActivity {
         setContentView(R.layout.activity_game_play);
 
         // Handles the file name given and reads the board
-        FileHandler fileHandler = new FileHandler(getApplicationContext());
-
-        board = new Board();
+        fileHandler = new FileHandler(getApplicationContext());
 
         String gameType = getIntent().getStringExtra(AppLauncher.MESSAGE_GAME);
 
         if (gameType.equalsIgnoreCase("new")) {
             // Set up the board.
-            board = new Board();
-            humanScore = 0;
-            computerScore = 0;
+            int[] initialKeys = { 5, 1, 2, 6, 1, 6, 2, 1, 5 };
+            board = new Board(initialKeys);
+            humanScore = Integer.parseInt(getIntent().getStringExtra(AppLauncher.MESSAGE_HUMANSCORE));
+            computerScore = Integer.parseInt(getIntent().getStringExtra(AppLauncher.MESSAGE_COMPUTERSCORE));
 
             String temp = getIntent().getStringExtra(AppLauncher.MESSAGE_TURN);
 
@@ -61,6 +82,8 @@ public class GamePlay extends AppCompatActivity {
                 computerTurn = false;
             }
             else computerTurn = true;
+
+            updateScore(humanScore, computerScore, computerTurn);
         }
         else {
             fileHandler.openGame(getIntent().getStringExtra(AppLauncher.MESSAGE_FILENAME));
@@ -68,28 +91,60 @@ public class GamePlay extends AppCompatActivity {
             humanScore = fileHandler.getHumanScore();
             computerScore = fileHandler.getComputerScore();
             computerTurn = fileHandler.getIfComputerTurn();
+
+            updateScore(humanScore, computerScore, computerTurn);
         }
-
-//
-//        try {
-//            fileHandler.saveGame("a2233", board, true, 0,0);
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-
 
         message = (TextView) findViewById(R.id.message);
 
         // Make the table based on the values on the board.
         makeTable(board);
+
+        computer = new Computer(board);
+        human = new Human(board);
     }
+
+    public void saveGame(View view) {
+
+        try {
+            fileHandler.saveGame(filename,board,computerTurn,computerScore,humanScore);
+            Intent intent = new Intent(getApplicationContext(), GameEndInfo.class);
+            intent.putExtra(AppLauncher.MESSAGE_HUMANSCORE, String.valueOf(humanScore));
+            intent.putExtra(AppLauncher.MESSAGE_COMPUTERSCORE, String.valueOf(computerScore));
+
+            startActivity(intent);
+
+            // Go to next intent by passing in player scores.
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    public void updateScore(int hScore, int cScore, boolean isComputer) {
+        TextView tempView = (TextView) findViewById(R.id.humanScore);
+        tempView.setText(hScore+"");
+
+        tempView = (TextView) findViewById(R.id.computerScore);
+        tempView.setText(cScore+"");
+
+        tempView = (TextView) findViewById(R.id.turn);
+        tempView.setText(isComputer ? "Computer" : "You");
+    }
+
+    public void moveComputer(View view) {
+
+    }
+
 
     public View.OnClickListener computeAction = new View.OnClickListener() {
 
         @Override
         public void onClick(View v) {
             Coordinates clickedPosition = (Coordinates) v.getTag();
-            Log.v("OLA: " , "Clicked pos: " + clickedPosition.getRow() + " " + clickedPosition.getCol());
+            //Log.v("OLA: " , "Clicked pos: " + clickedPosition.getRow() + " " + clickedPosition.getCol());
             Dice diceClicked = board.getDiceAt(clickedPosition);
 
             if (computerTurn) {
@@ -105,7 +160,6 @@ public class GamePlay extends AppCompatActivity {
                 v.setBackgroundColor(SELECTED_COLOR);
                 selectionMode = !selectionMode;
                 inputCoordinates = clickedPosition;
-                Log.v("OLA:" , diceClicked.getValue());
                 prevView = v;
             }
             else {
@@ -117,13 +171,23 @@ public class GamePlay extends AppCompatActivity {
 
                 if (board.isLegal(inputCoordinates, desiredCoordinates, computerTurn) &&
                         board.isPathGood(inputCoordinates, desiredCoordinates, directions))  {
-                    message.setText("Move is legal");
 
-                    // TODO: Ask for the direction here
-                    board.move(inputCoordinates, desiredCoordinates, 'f');
+                    // Ask for the direction here
+                    char chosenDirection = validateDirection(inputCoordinates, desiredCoordinates, directions);
+
+                    if (chosenDirection == INVALID_DIRECTION) {
+                        return;
+                    }
+
+                    message.setText("Move is legal");
+                    board.move(inputCoordinates, desiredCoordinates, chosenDirection);
+                    computerTurn = true;
+
+                    updateTurnView(computerTurn);
+
+                    // Update tiles here
                     updateView(inputCoordinates, desiredCoordinates);
 
-                    // TODO: Update tiles here
                 }
                 else {
                     message.setText("ILLEGAL MOVE");
@@ -132,19 +196,60 @@ public class GamePlay extends AppCompatActivity {
 
                 //Toast.makeText(getApplicationContext(), "Selected: " + inputCoordinates.getString() + " desired: " + desiredCoordinates.getString(), Toast.LENGTH_LONG).show();
 
-                if (prevView != null) {
-                    prevView.setBackgroundColor(DEFAULT_COLOR);
-                    prevView = null;
-                }
-
-                inputCoordinates = null;
-                desiredCoordinates = null;
+                resetSelections();
                 selectionMode = !selectionMode;
             }
 
-
         }
     };
+
+    public void updateTurnView(boolean isComputer) {
+        TextView player = (TextView) findViewById(R.id.turn);
+
+        if (isComputer) {
+            player.setText(COMPUTER_TURN);
+        }
+        else {
+            player.setText(HUMAN_TURN);
+        }
+    }
+
+    private char validateDirection(Coordinates old, Coordinates newC, boolean[] directions) {
+        RadioGroup directionClicked = (RadioGroup) findViewById(R.id.dicectionChoice);
+
+        if (directions[0] == true && directions[1] == true) {
+            System.out.println("Both paths are possible");
+            if (directionClicked.getCheckedRadioButtonId() == INVALID_SELECTION) {
+                selectionMode = true;
+                resetSelections();
+                message.setText("You have not selected the direction you want to move first");
+                return INVALID_DIRECTION;
+            }
+            else {
+                int selectedId = directionClicked.getCheckedRadioButtonId();
+                RadioButton selectedButton = (RadioButton) findViewById(selectedId);
+                String text = selectedButton.getText().toString();
+                if (text.equalsIgnoreCase(LATERAL_FIRST)) {
+                    return 'l';
+                }
+                else return 'f';
+            }
+        }
+
+        // At this point, either lateral or horizontal direction is possible
+        return directions[0] == true ? 'f' : 'l';
+
+    }
+
+    public void resetSelections() {
+        if (prevView != null) {
+            prevView.setBackgroundColor(DEFAULT_COLOR);
+            prevView = null;
+        }
+
+        inputCoordinates = null;
+        desiredCoordinates = null;
+    }
 
 
     public void updateView(Coordinates oldPos, Coordinates newPos) {

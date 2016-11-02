@@ -1,42 +1,47 @@
 package com.duell.view;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.TextView;
 
 import com.duell.R;
 
+import org.w3c.dom.Text;
+
 import java.util.Random;
 
-public class AppLauncher extends AppCompatActivity {
-    public static final String MESSAGE_TURN = "turn";
-    public static final String MESSAGE_GAME = "game";
-    public static final String MESSAGE_FILENAME = "filename";
-    public static final String MESSAGE_HUMANSCORE = "humanScore";
-    public static final String MESSAGE_COMPUTERSCORE = "computerScore";
+public class GameEndInfo extends AppCompatActivity {
+
+    int humanScore=0;
+    int computerScore=0;
     private Random random = new Random();
-    private boolean isComputerTurn = false;
+    boolean isComputerTurn = false;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_app_launcher);
+        setContentView(R.layout.activity_game_end_info);
 
+        if (getIntent().getStringExtra(AppLauncher.MESSAGE_COMPUTERSCORE) != null) {
+            computerScore = Integer.parseInt(getIntent().getStringExtra(AppLauncher.MESSAGE_COMPUTERSCORE));
+        }
+        if (getIntent().getStringExtra(AppLauncher.MESSAGE_HUMANSCORE) != null) {
+            humanScore = Integer.parseInt(getIntent().getStringExtra(AppLauncher.MESSAGE_HUMANSCORE));
+        }
+        TextView temp = (TextView) findViewById(R.id.computerScore);
+        temp.setText(computerScore+"");
+
+        temp = (TextView) findViewById(R.id.humanScore);
+        temp.setText(humanScore+"");
     }
 
-    private int rollDie() {
+    public void playAgain(View view) {
 
-        return random.nextInt(6)+ 1;
-    }
-
-    public void playGame(View view) {
         final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle("Rolling the dice!");
         alertDialog.setMessage("Please click roll to roll the die to choose first player");
@@ -80,15 +85,15 @@ public class AppLauncher extends AppCompatActivity {
                                 new DialogInterface.OnClickListener(){
                                     public void onClick(DialogInterface dialogInterface, int whi) {
                                         Intent intent = new Intent(getApplicationContext(), GamePlay.class);
-                                        intent.putExtra(MESSAGE_COMPUTERSCORE, "0");
-                                        intent.putExtra(MESSAGE_HUMANSCORE,"0");
+                                        intent.putExtra(AppLauncher.MESSAGE_COMPUTERSCORE, computerScore+"");
+                                        intent.putExtra(AppLauncher.MESSAGE_HUMANSCORE,humanScore+"");
                                         if (isComputerTurn) {
-                                            intent.putExtra(MESSAGE_TURN, "Computer");
+                                            intent.putExtra(AppLauncher.MESSAGE_TURN, "Computer");
                                         }
                                         else {
-                                            intent.putExtra(MESSAGE_TURN, "human");
+                                            intent.putExtra(AppLauncher.MESSAGE_TURN, "human");
                                         }
-                                        intent.putExtra(MESSAGE_GAME, "new");
+                                        intent.putExtra(AppLauncher.MESSAGE_GAME, "new");
                                         startActivity(intent);
                                     }
                                 });
@@ -99,38 +104,15 @@ public class AppLauncher extends AppCompatActivity {
                 });
 
         alertDialog.show();
+
     }
 
-    /**
-     * Loads if load game button is pressed.
-     * @param view
-     */
-    public void loadGame(View view) {
-        // Creates the dialog box for allowing user to select which file to open. User does not have to input the extension
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        builder.setView(inflater.inflate(R.layout.check, null));
-        builder.setMessage("Please enter the required info");
-        builder.setNeutralButton("NEXT", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                Dialog d = (Dialog) dialog;
+    private int rollDie() {
 
-                EditText file = (EditText) d.findViewById(R.id.filename);
-                String filename = file.getText().toString();
+        return random.nextInt(6)+ 1;
+    }
 
-                Intent intent = new Intent(getApplicationContext(), GamePlay.class);
-
-                // Puts the extra message in the intent for another activity to computer likewise
-                intent.putExtra(MESSAGE_GAME, "load");
-
-                intent.putExtra(MESSAGE_FILENAME, filename);
-
-                startActivity(intent);
-            }
-        });
-
-
-        builder.create().show();
+    public void exitGame(View view) {
+        System.exit(0);
     }
 }
