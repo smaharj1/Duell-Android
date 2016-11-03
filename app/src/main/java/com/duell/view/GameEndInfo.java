@@ -33,8 +33,21 @@ public class GameEndInfo extends AppCompatActivity {
         if (getIntent().getStringExtra(AppLauncher.MESSAGE_HUMANSCORE) != null) {
             humanScore = Integer.parseInt(getIntent().getStringExtra(AppLauncher.MESSAGE_HUMANSCORE));
         }
+
         TextView temp = (TextView) findViewById(R.id.computerScore);
         temp.setText(computerScore+"");
+
+        temp = (TextView) findViewById(R.id.winner);
+        if (humanScore > computerScore) {
+            temp.setText("Congratulations! You won!");
+        }
+        else if (humanScore < computerScore) {
+            temp.setText("Better luck next time");
+        }
+        else {
+            temp.setText("It's a draw.");
+        }
+
 
         temp = (TextView) findViewById(R.id.humanScore);
         temp.setText(humanScore+"");

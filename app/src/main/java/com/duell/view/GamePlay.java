@@ -4,9 +4,10 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TableLayout;
@@ -21,8 +22,6 @@ import com.duell.model.Dice;
 import com.duell.model.FileHandler;
 import com.duell.model.Human;
 import com.duell.model.Player;
-
-import org.w3c.dom.Text;
 
 import java.io.FileNotFoundException;
 
@@ -48,6 +47,7 @@ public class GamePlay extends AppCompatActivity {
 
     private TextView message;
     private View prevView;
+    private View newView;
 
     private Player human;
     private Player computer;
@@ -56,6 +56,8 @@ public class GamePlay extends AppCompatActivity {
     // Tracks the total score of human and computer
     private int humanScore = 0;
     private int computerScore = 0;
+
+    private Animation anim;
 
     FileHandler fileHandler;
 
@@ -103,25 +105,29 @@ public class GamePlay extends AppCompatActivity {
 
         computer = new Computer(board);
         human = new Human(board);
+
+        initializeAnimation();
     }
 
     public void saveGame(View view) {
 
         try {
             fileHandler.saveGame(filename,board,computerTurn,computerScore,humanScore);
-            Intent intent = new Intent(getApplicationContext(), GameEndInfo.class);
-            intent.putExtra(AppLauncher.MESSAGE_HUMANSCORE, String.valueOf(humanScore));
-            intent.putExtra(AppLauncher.MESSAGE_COMPUTERSCORE, String.valueOf(computerScore));
 
-            startActivity(intent);
+            endGame();
 
-            // Go to next intent by passing in player scores.
 
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
 
+    public void endGame() {
+        Intent intent = new Intent(getApplicationContext(), GameEndInfo.class);
+        intent.putExtra(AppLauncher.MESSAGE_HUMANSCORE, String.valueOf(humanScore));
+        intent.putExtra(AppLauncher.MESSAGE_COMPUTERSCORE, String.valueOf(computerScore));
 
+        startActivity(intent);
     }
 
     public void updateScore(int hScore, int cScore, boolean isComputer) {
@@ -136,6 +142,14 @@ public class GamePlay extends AppCompatActivity {
     }
 
     public void moveComputer(View view) {
+        if (!computerTurn) {
+            printMessage("It is your turn.");
+            return;
+        }
+
+
+        resetSelectionView();
+
         computer.play();
 
         Coordinates movingCoord = computer.getPrevCoordinates();
@@ -146,8 +160,19 @@ public class GamePlay extends AppCompatActivity {
         computerTurn = !computerTurn;
         updateTurnView(computerTurn);
 
+        printMessage(computer.getPrintMessage());
+
+        if (computer.playerWins()) {
+            computerScore++;
+            endGame();
+        }
+
     }
 
+    public void printMessage(String message) {
+        TextView mView = (TextView) findViewById(R.id.message);
+        mView.setText(message);
+    }
 
     public View.OnClickListener computeAction = new View.OnClickListener() {
 
@@ -157,16 +182,22 @@ public class GamePlay extends AppCompatActivity {
             //Log.v("OLA: " , "Clicked pos: " + clickedPosition.getRow() + " " + clickedPosition.getCol());
             Dice diceClicked = board.getDiceAt(clickedPosition);
 
+
             if (computerTurn) {
                 message.setText("Not your turn playa!");
                 return;
             }
             if (diceClicked == null && selectionMode) {
-                message.setText("Empty box selected. Please select again.");
+                message.setText("You with His Mickey Mouse Tattoos and 33-Pound Head can't see you selected empty box? - The Rock");
+                return;
+            }
+            if (diceClicked != null && diceClicked.isPlayerComputer()) {
+                message.setText("Excuse me? - Vickie Guerrero (Not your dice)");
                 return;
             }
 
             if (selectionMode) {
+                resetSelectionView();
                 v.setBackgroundColor(SELECTED_COLOR);
                 selectionMode = !selectionMode;
                 inputCoordinates = clickedPosition;
@@ -198,15 +229,19 @@ public class GamePlay extends AppCompatActivity {
                     // Update tiles here
                     updateView(inputCoordinates, desiredCoordinates);
 
+                    if (human.playerWins()) {
+                        humanScore++;
+                        endGame();
+                    }
+
+
                 }
                 else {
-                    message.setText("ILLEGAL MOVE");
-
+                    message.setText("You can't do that. That move is physically/virtually impossible");
                 }
 
                 //Toast.makeText(getApplicationContext(), "Selected: " + inputCoordinates.getString() + " desired: " + desiredCoordinates.getString(), Toast.LENGTH_LONG).show();
 
-                resetSelections();
                 selectionMode = !selectionMode;
             }
 
@@ -231,7 +266,7 @@ public class GamePlay extends AppCompatActivity {
             System.out.println("Both paths are possible");
             if (directionClicked.getCheckedRadioButtonId() == INVALID_SELECTION) {
                 selectionMode = true;
-                resetSelections();
+                resetSelectionView();
                 message.setText("You have not selected the direction you want to move first");
                 return INVALID_DIRECTION;
             }
@@ -251,10 +286,17 @@ public class GamePlay extends AppCompatActivity {
 
     }
 
-    public void resetSelections() {
+    public void resetSelectionView() {
         if (prevView != null) {
             prevView.setBackgroundColor(DEFAULT_COLOR);
+            prevView.clearAnimation();
             prevView = null;
+        }
+
+        if (newView != null) {
+            newView.setBackgroundColor(DEFAULT_COLOR);
+            newView.clearAnimation();
+            newView = null;
         }
 
         inputCoordinates = null;
@@ -266,10 +308,14 @@ public class GamePlay extends AppCompatActivity {
         TextView tempView = findViewInTable(oldPos);
         tempView.setText("");
         tempView.setBackgroundColor(MOVE_INDICATOR_COLOR);
+        tempView.startAnimation(anim);
+        prevView = tempView;
 
         tempView = findViewInTable(newPos);
         tempView.setText(board.getDiceAt(newPos).getValue());
         tempView.setBackgroundColor(MOVE_INDICATOR_COLOR);
+        tempView.startAnimation(anim);
+        newView = tempView;
     }
 
 
@@ -291,10 +337,6 @@ public class GamePlay extends AppCompatActivity {
         return null;
 
     }
-
-
-
-
 
     /**
      * Makes the table in the board
@@ -378,5 +420,15 @@ public class GamePlay extends AppCompatActivity {
             row.addView(colView, params);
         }
         colIndexing.addView(row);
+    }
+
+
+    public void initializeAnimation() {
+        // Helps blink the tile
+        anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(50); //You can manage the blinking time with this parameter
+        anim.setStartOffset(20);
+        anim.setRepeatMode(Animation.REVERSE);
+        anim.setRepeatCount(Animation.INFINITE);
     }
 }

@@ -112,7 +112,7 @@ public class Board {
 
     // Checks if the move is legal in terms of user's turn and who the user is replacing
     public boolean isLegal(Coordinates oldPos, Coordinates newPos, boolean isPlayerComputer) {
-        Log.v("OLA-BOARD: ", "Checking for " + getDiceAt(oldPos).getValue());
+        //Log.v("OLA-BOARD: ", "Checking for " + getDiceAt(oldPos).getValue());
 
 
         int oldRow = oldPos.getRow();

@@ -11,7 +11,14 @@ public class Human extends Player {
     }
 
     @Override
-    public void play() {
+    public void play(Coordinates from, Coordinates to) {
+        prevCoordinates = from;
+        newCoordinates = to;
+    }
 
+    public boolean checkValidity() {
+
+
+        return false;
     }
 }

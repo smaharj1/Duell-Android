@@ -28,6 +28,7 @@ public class Computer extends Player {
         if (canWin()) {
             printMessage = "The Best There Is, The Best There Was and The Best There Ever Will Be - Bret Hart";
             movePossible = true;
+            playerWon = true;
         }
         else {
             TreeNode threat = isKingInThreat();
@@ -56,7 +57,6 @@ public class Computer extends Player {
             printMessage = "Just palying offense";
         }
 
-        System.out.println("MESSAGE: " + printMessage);
 
 
         // Temporarily creates an array of directions to call the main board function.
@@ -77,9 +77,7 @@ public class Computer extends Player {
     private void safeOffenceMove() {
         nullifySuggestions();
 
-        for (int i =0; i < opponentPlayer.size(); i++) {
-            System.out.println("Opponent: " + opponentPlayer.get(i).getDice().getValue());
-        }
+
 
         for (int row = board.getTotalRows() - 1; row >= 0; row--) {
             for (int col = 0; col < board.getTotalColumns(); col++) {
@@ -155,8 +153,10 @@ public class Computer extends Player {
 
             boolean[] tempDirection = {true, true};
             if (board.isPathGood(tempNode.getCoordinates(), diceToEat.getCoordinates(), tempDirection)) {
+                //System.out.println("Path is good for " + tempNode.getDice().getValue() + " to eat " + diceToEat.getDice().getValue());
                 prevCoordinates = tempNode.getCoordinates();
                 newCoordinates = diceToEat.getCoordinates();
+                return true;
             }
         }
 

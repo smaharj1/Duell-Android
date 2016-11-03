@@ -108,4 +108,15 @@
             android:onClick="exitGame" />
     </LinearLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/textView8"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="115dp"
+        android:id="@+id/winner"
+        android:textSize="50dp"
+        android:textAlignment="center"
+        android:textStyle="normal|bold" />
+
 </RelativeLayout>

@@ -11,6 +11,7 @@ public class Player {
     protected Board board;
     protected Coordinates prevCoordinates;
     protected Coordinates newCoordinates;
+    protected boolean playerWon = false;
 
     public Player(Board b) {
 
@@ -21,7 +22,18 @@ public class Player {
 
     }
 
+    public void play(Coordinates from, Coordinates to) {
+        prevCoordinates = from;
+        newCoordinates = to;
+    }
+
     public Coordinates getPrevCoordinates() { return prevCoordinates;}
     public Coordinates getNewCoordinates() { return newCoordinates;}
+
+    public boolean playerWins() {
+        return playerWon;
+    }
+
+    public String getPrintMessage() { return printMessage;}
 
 }
