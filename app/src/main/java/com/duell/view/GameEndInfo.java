@@ -132,5 +132,7 @@ public class GameEndInfo extends AppCompatActivity {
         intent.putExtra(AppLauncher.MESSAGE_COMPUTERSCORE, computerScore+"");
         intent.putExtra(AppLauncher.MESSAGE_HUMANSCORE,humanScore+"");
 
+        startActivity(intent);
+
     }
 }

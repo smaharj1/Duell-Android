@@ -30,7 +30,7 @@ public class GamePlay extends AppCompatActivity {
     private final int SELECTED_COLOR = Color.parseColor("#D3D3D3");
     private final int MOVE_INDICATOR_COLOR = Color.parseColor("#f0a830");
     private final int INVALID_SELECTION = -1;
-    private final char INVALID_DIRECTION = 'a';
+    private final char DIRECTION_NOT_CHOSEN = 'a';
     private final String LATERAL_FIRST = "lateral first";
     private final String COMPUTER_TURN = "Computer";
     private final String HUMAN_TURN = "You";
@@ -210,19 +210,9 @@ public class GamePlay extends AppCompatActivity {
 
                 // define directions
                 boolean[] directions = {true, true};
+                char chosenDirection = getChosenDirection(inputCoordinates, desiredCoordinates, directions);
 
-                if (board.isLegal(inputCoordinates, desiredCoordinates, computerTurn) &&
-                        board.isPathGood(inputCoordinates, desiredCoordinates, directions))  {
-
-                    // Ask for the direction here
-                    char chosenDirection = validateDirection(inputCoordinates, desiredCoordinates, directions);
-
-                    if (chosenDirection == INVALID_DIRECTION) {
-                        return;
-                    }
-
-                    message.setText("Move is legal");
-                    board.move(inputCoordinates, desiredCoordinates, chosenDirection);
+                if (human.play(inputCoordinates, desiredCoordinates, chosenDirection)) {
                     computerTurn = true;
 
                     updateTurnView(computerTurn);
@@ -234,14 +224,10 @@ public class GamePlay extends AppCompatActivity {
                         humanScore++;
                         endGame();
                     }
-
-
-                }
-                else {
-                    message.setText("You can't do that. That move is physically/virtually impossible");
                 }
 
-                //Toast.makeText(getApplicationContext(), "Selected: " + inputCoordinates.getString() + " desired: " + desiredCoordinates.getString(), Toast.LENGTH_LONG).show();
+
+                printMessage(human.getPrintMessage());
 
                 selectionMode = !selectionMode;
             }
@@ -260,16 +246,16 @@ public class GamePlay extends AppCompatActivity {
         }
     }
 
-    private char validateDirection(Coordinates old, Coordinates newC, boolean[] directions) {
+    private char getChosenDirection(Coordinates old, Coordinates newC, boolean[] directions) {
         RadioGroup directionClicked = (RadioGroup) findViewById(R.id.dicectionChoice);
 
-        if (directions[0] == true && directions[1] == true) {
-            System.out.println("Both paths are possible");
+        //if (directions[0] == true && directions[1] == true) {
+            //System.out.println("Both paths are possible");
             if (directionClicked.getCheckedRadioButtonId() == INVALID_SELECTION) {
-                selectionMode = true;
-                resetSelectionView();
-                message.setText("You have not selected the direction you want to move first");
-                return INVALID_DIRECTION;
+                //selectionMode = true;
+                //resetSelectionView();
+                //message.setText("You have not selected the direction you want to move first");
+                return DIRECTION_NOT_CHOSEN;
             }
             else {
                 int selectedId = directionClicked.getCheckedRadioButtonId();
@@ -280,10 +266,10 @@ public class GamePlay extends AppCompatActivity {
                 }
                 else return 'f';
             }
-        }
+        //}
 
         // At this point, either lateral or horizontal direction is possible
-        return directions[0] == true ? 'f' : 'l';
+        //return directions[0] == true ? 'f' : 'l';
 
     }
 
