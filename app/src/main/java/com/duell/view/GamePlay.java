@@ -126,6 +126,7 @@ public class GamePlay extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), GameEndInfo.class);
         intent.putExtra(AppLauncher.MESSAGE_HUMANSCORE, String.valueOf(humanScore));
         intent.putExtra(AppLauncher.MESSAGE_COMPUTERSCORE, String.valueOf(computerScore));
+        intent.putExtra(AppLauncher.MESSAGE_WINNER, "computer");
 
         startActivity(intent);
     }

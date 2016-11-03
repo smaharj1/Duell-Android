@@ -20,6 +20,7 @@ public class AppLauncher extends AppCompatActivity {
     public static final String MESSAGE_FILENAME = "filename";
     public static final String MESSAGE_HUMANSCORE = "humanScore";
     public static final String MESSAGE_COMPUTERSCORE = "computerScore";
+    public static final String MESSAGE_WINNER = "winner";
     private Random random = new Random();
     private boolean isComputerTurn = false;
 

@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 import com.duell.R;
 
-import org.w3c.dom.Text;
-
 import java.util.Random;
 
 public class GameEndInfo extends AppCompatActivity {
@@ -20,6 +18,7 @@ public class GameEndInfo extends AppCompatActivity {
     int computerScore=0;
     private Random random = new Random();
     boolean isComputerTurn = false;
+    boolean computerWins = true;
 
 
     @Override
@@ -34,18 +33,21 @@ public class GameEndInfo extends AppCompatActivity {
             humanScore = Integer.parseInt(getIntent().getStringExtra(AppLauncher.MESSAGE_HUMANSCORE));
         }
 
+        if (getIntent().getStringExtra(AppLauncher.MESSAGE_WINNER) != null) {
+            String winnerString = getIntent().getStringExtra(AppLauncher.MESSAGE_WINNER);
+
+            computerWins = winnerString.equalsIgnoreCase("computer") ? true : false;
+        }
+
         TextView temp = (TextView) findViewById(R.id.computerScore);
         temp.setText(computerScore+"");
 
         temp = (TextView) findViewById(R.id.winner);
-        if (humanScore > computerScore) {
-            temp.setText("Congratulations! You won!");
-        }
-        else if (humanScore < computerScore) {
-            temp.setText("Better luck next time");
+        if (!computerWins) {
+            temp.setText("Congratulations! You won the game!");
         }
         else {
-            temp.setText("It's a draw.");
+            temp.setText("Better luck next time. You lost the game");
         }
 
 
@@ -126,6 +128,9 @@ public class GameEndInfo extends AppCompatActivity {
     }
 
     public void exitGame(View view) {
-        System.exit(0);
+        Intent intent = new Intent(getApplicationContext(), TournamentEndInfo.class);
+        intent.putExtra(AppLauncher.MESSAGE_COMPUTERSCORE, computerScore+"");
+        intent.putExtra(AppLauncher.MESSAGE_HUMANSCORE,humanScore+"");
+
     }
 }
