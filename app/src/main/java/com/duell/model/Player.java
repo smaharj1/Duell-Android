@@ -7,18 +7,21 @@ import java.util.ArrayList;
  */
 
 public class Player {
-    private ArrayList<Dice> playerDices;
-    private String printMessage;
-    private Board board;
+    protected String printMessage;
+    protected Board board;
+    protected Coordinates prevCoordinates;
+    protected Coordinates newCoordinates;
 
     public Player(Board b) {
-        playerDices = new ArrayList<>();
+
         board = b;
     }
 
-    public Dice play() {
+    public void play() {
 
-        return null;
     }
+
+    public Coordinates getPrevCoordinates() { return prevCoordinates;}
+    public Coordinates getNewCoordinates() { return newCoordinates;}
 
 }

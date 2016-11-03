@@ -29,6 +29,7 @@ import java.io.FileNotFoundException;
 public class GamePlay extends AppCompatActivity {
     private final int DEFAULT_COLOR = Color.parseColor("#FCEBB6");
     private final int SELECTED_COLOR = Color.parseColor("#D3D3D3");
+    private final int MOVE_INDICATOR_COLOR = Color.parseColor("#f0a830");
     private final int INVALID_SELECTION = -1;
     private final char INVALID_DIRECTION = 'a';
     private final String LATERAL_FIRST = "lateral first";
@@ -135,6 +136,15 @@ public class GamePlay extends AppCompatActivity {
     }
 
     public void moveComputer(View view) {
+        computer.play();
+
+        Coordinates movingCoord = computer.getPrevCoordinates();
+        Coordinates newCoord = computer.getNewCoordinates();
+
+        updateView(movingCoord, newCoord);
+
+        computerTurn = !computerTurn;
+        updateTurnView(computerTurn);
 
     }
 
@@ -255,11 +265,11 @@ public class GamePlay extends AppCompatActivity {
     public void updateView(Coordinates oldPos, Coordinates newPos) {
         TextView tempView = findViewInTable(oldPos);
         tempView.setText("");
-        tempView.setBackgroundColor(DEFAULT_COLOR);
+        tempView.setBackgroundColor(MOVE_INDICATOR_COLOR);
 
         tempView = findViewInTable(newPos);
         tempView.setText(board.getDiceAt(newPos).getValue());
-
+        tempView.setBackgroundColor(MOVE_INDICATOR_COLOR);
     }
 
 

@@ -11,8 +11,7 @@ public class Human extends Player {
     }
 
     @Override
-    public Dice play() {
+    public void play() {
 
-        return null;
     }
 }
