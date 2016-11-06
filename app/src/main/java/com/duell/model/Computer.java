@@ -35,6 +35,10 @@ public class Computer extends Player {
                 }
                 else {
                     // Blocks the move if possible.
+                    if (blockMove(threat)) {
+                        printMessage = "Threat has been blocked";
+                        movePossible = true;
+                    }
                 }
             }
             else {

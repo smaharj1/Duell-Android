@@ -114,7 +114,7 @@ public class GamePlay extends AppCompatActivity {
         try {
             fileHandler.saveGame(filename,board,computerTurn,computerScore,humanScore);
 
-            endGame();
+            endTournament();
 
 
         } catch (FileNotFoundException e) {
@@ -122,11 +122,21 @@ public class GamePlay extends AppCompatActivity {
         }
     }
 
-    public void endGame() {
+    public void endGame(boolean computerWon) {
         Intent intent = new Intent(getApplicationContext(), GameEndInfo.class);
         intent.putExtra(AppLauncher.MESSAGE_HUMANSCORE, String.valueOf(humanScore));
         intent.putExtra(AppLauncher.MESSAGE_COMPUTERSCORE, String.valueOf(computerScore));
-        intent.putExtra(AppLauncher.MESSAGE_WINNER, "computer");
+
+        String winner = computerWon ? "computer" : "human";
+        intent.putExtra(AppLauncher.MESSAGE_WINNER, winner);
+
+        startActivity(intent);
+    }
+
+    private void endTournament() {
+        Intent intent = new Intent(getApplicationContext(), TournamentEndInfo.class);
+        intent.putExtra(AppLauncher.MESSAGE_COMPUTERSCORE, computerScore+"");
+        intent.putExtra(AppLauncher.MESSAGE_HUMANSCORE,humanScore+"");
 
         startActivity(intent);
     }
@@ -165,7 +175,7 @@ public class GamePlay extends AppCompatActivity {
 
         if (computer.playerWins()) {
             computerScore++;
-            endGame();
+            endGame(true);
         }
 
     }
@@ -192,16 +202,18 @@ public class GamePlay extends AppCompatActivity {
                 message.setText("You with His Mickey Mouse Tattoos and 33-Pound Head can't see you selected empty box? - The Rock");
                 return;
             }
-            if (diceClicked != null && diceClicked.isPlayerComputer()) {
-                message.setText("Excuse me? - Vickie Guerrero (Not your dice)");
-                return;
-            }
+
 
             if (selectionMode) {
                 resetSelectionView();
+                if (diceClicked != null && diceClicked.isPlayerComputer()) {
+                    message.setText("Excuse me? - Vickie Guerrero (Not your dice)");
+                    return;
+                }
                 v.setBackgroundColor(SELECTED_COLOR);
                 selectionMode = !selectionMode;
                 inputCoordinates = clickedPosition;
+
                 prevView = v;
             }
             else {
@@ -222,7 +234,7 @@ public class GamePlay extends AppCompatActivity {
 
                     if (human.playerWins()) {
                         humanScore++;
-                        endGame();
+                        endGame(false);
                     }
                 }
 

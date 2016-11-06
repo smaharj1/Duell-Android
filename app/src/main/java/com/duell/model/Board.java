@@ -2,6 +2,9 @@ package com.duell.model;
 
 import android.util.Log;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 /**
  * Created by Sujil on 10/30/2016.
  */
@@ -145,6 +148,76 @@ public class Board {
         }
 
         return true;
+    }
+
+    public ArrayList<Coordinates> getPathCoordinates(Coordinates from, Coordinates to) {
+        boolean[] directions = {true, true};
+        ArrayList<Coordinates> pathCoordinates = new ArrayList<>();
+
+        int row1 = from.getRow();
+        int col1 = from.getCol();
+        int row2 = to.getRow();
+        int col2 = to.getCol();
+
+        if (isPathGood(from, to, directions)) {
+            if (directions[0] == true) {
+                // This is when frontal is first
+                if (row1 < row2) {
+                    for (int i = row2-1; i >= row1; i--) {
+                        if (col1 == col2 && i == row1) continue;
+                        pathCoordinates.add(new Coordinates(i,col2));
+                    }
+                }
+                else if (row1 > row2){
+                    for (int i = row1-1; i >= row2; i--) {
+                        if (col1 == col2 && i == row1) continue;
+                        pathCoordinates.add((new Coordinates(i, col1)));
+                    }
+                }
+
+                if (col1 < col2) {
+                    for (int i =col2-1; i>col1; i--) {
+                        pathCoordinates.add(new Coordinates(row1, i));
+                    }
+                }
+                else if (col1 > col2) {
+                    for (int i =col1-1; i>col2; i--) {
+                        pathCoordinates.add(new Coordinates(row2, i));
+                    }
+                }
+            }
+            else if (directions[1] == true) {
+                // This is when lateral is first
+                if (col1 < col2) {
+                    for (int i =col2-1; i>=col1; i--) {
+                        if (row1 == row2 && i == col1) continue;
+                        pathCoordinates.add(new Coordinates(row2, i));
+                    }
+                }
+                else if (col1 > col2) {
+                    for (int i =col1-1; i>=col2; i--) {
+                        if (row1 == row2 && i == col2) continue;
+                        pathCoordinates.add(new Coordinates(row1, i));
+                    }
+                }
+
+                if (row1 < row2) {
+                    for (int i = row2-1; i > row1; i--) {
+                        pathCoordinates.add(new Coordinates(i,col1));
+                    }
+                }
+                else if (row1 > row2){
+                    for (int i = row1-1; i > row2; i--) {
+                        pathCoordinates.add((new Coordinates(i, col2)));
+                    }
+                }
+            }
+
+        }
+
+        return pathCoordinates;
+
+
     }
 
     public boolean bothPathPossible(Coordinates oldPos, Coordinates newPos) {

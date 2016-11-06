@@ -170,6 +170,30 @@ public class Player {
         return null;
     }
 
+    protected boolean blockMove(TreeNode threat) {
+        nullifySuggestions();
+
+        ArrayList<Coordinates> pathCoordinates = new ArrayList<>();
+        TreeNode currentKing = getCurrentPlayersKing();
+
+        pathCoordinates = board.getPathCoordinates(threat.getCoordinates(), currentKing.getCoordinates());
+
+        for (int i=0; i < currentPlayer.size(); i++) {
+            TreeNode currentNode = currentPlayer.get(i);
+            if (currentNode.getDice().isPlayerKing()) continue;
+            for (int j = 0; j < pathCoordinates.size(); j++) {
+                boolean[] dir = {true, true};
+                if (board.isPathGood(currentNode.getCoordinates(), pathCoordinates.get(j), dir)) {
+                    prevCoordinates = currentNode.getCoordinates();
+                    newCoordinates = pathCoordinates.get(j);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     protected TreeNode getOpponentsKing() {
         // Loops throught the vector of dices of opponent player and returns the king node.
         for (int i = 0; i < opponentPlayer.size(); i++) {
