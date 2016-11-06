@@ -19,6 +19,6 @@ public class Coordinates {
     public int getCol() { return col;}
 
     public String getString() {
-        return row + "," + col;
+        return (row+1) + "," + (col+1);
     }
 }

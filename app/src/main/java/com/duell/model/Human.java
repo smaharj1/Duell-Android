@@ -42,6 +42,98 @@ public class Human extends Player {
         return false;
     }
 
+    @Override
+    public void play() {
+        refreshPlayers();
+        boolean movePossible = false;
+
+//        if (canWin()) {
+//            printMessage = "The Best There Is, The Best There Was and The Best There Ever Will Be - Bret Hart";
+//            movePossible = true;
+//            playerWon = true;
+//        }
+        //else {
+            TreeNode threat = isKingInThreat();
+            if (threat != null) {
+                if (canEatThreat(threat)){
+                    printMessage = "You Cant See Me - John Cena";
+                    movePossible = true;
+                }
+                else {
+                    // Blocks the move if possible.
+                    if (blockMove(threat)) {
+                        printMessage = "Threat detected";
+                        movePossible = true;
+                    }
+                }
+            }
+            else {
+                // Executes if there is not threat to the king.
+                if (canEatOpponent()) {
+                    printMessage = "YOU WANT SOME? COME GET SOME! - John Cena";
+
+                    movePossible = true;
+                }
+            }
+        //}
+
+        if (!movePossible) {
+            // Just make a general move that gets you closer to the king.
+            safeOffenceMove();
+            printMessage = "Just playing offense";
+        }
+
+
+
+        // Temporarily creates an array of directions to call the main board function.
+        boolean[] tempDir = {true, true};
+
+        direction = 'f';
+
+        // Checks if the path is good.
+        board.isPathGood(prevCoordinates, newCoordinates, tempDir);
+
+        if (tempDir[0] == false) {
+            direction = 'l';
+        }
+
+        printMessage  = printMessage + " Move your player ";
+        if (direction == 'f') {
+            printMessage = printMessage + "frontal first";
+        }
+        else {
+            printMessage = printMessage + "lateral first";
+        }
+
+    }
+
+    @Override
+    public void refreshPlayers() {
+        // Resets the dices of current and opponent players.
+        opponentPlayer.clear();
+        currentPlayer.clear();
+
+        // Loops through each square in the board and adds the dices to the vectors of current and
+        // opponent players accordingly.
+        for (int row = 0; row < board.getTotalRows(); row++) {
+            for (int col = 0; col < board.getTotalColumns(); col++) {
+                if (board.getDiceAt(row, col) != null) {
+                    Dice d = board.getDiceAt(row, col);
+
+                    // Checks if the dice in a square is of same players as of provided player.
+                    // If not, it adds the dice to opponent's vector.
+                    if (d.isPlayerComputer()) {
+                        opponentPlayer.add(new TreeNode(d, row, col));
+                    }
+                    else {
+                        currentPlayer.add(new TreeNode(d, row, col));
+                    }
+                }
+            }
+        }
+    }
+
+
     private boolean validateDirection(char userChoice, boolean[] directions) {
         if (directions[0] == true && directions[1] == true) {
             if (userChoice == DIRECTION_NOT_CHOSEN) {

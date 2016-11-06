@@ -178,6 +178,8 @@ public class Player {
 
         pathCoordinates = board.getPathCoordinates(threat.getCoordinates(), currentKing.getCoordinates());
 
+
+
         for (int i=0; i < currentPlayer.size(); i++) {
             TreeNode currentNode = currentPlayer.get(i);
             if (currentNode.getDice().isPlayerKing()) continue;

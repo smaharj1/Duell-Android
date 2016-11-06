@@ -141,6 +141,27 @@ public class GamePlay extends AppCompatActivity {
         startActivity(intent);
     }
 
+    public void getHelp(View view) {
+        if (computerTurn) {
+            printMessage("It is not your turn.");
+            return;
+        }
+
+        resetSelectionView();
+
+        human.play();
+
+        Coordinates movingCoord = human.getPrevCoordinates();
+        Coordinates newCoord = human.getNewCoordinates();
+
+        updateHelpView(movingCoord, newCoord);
+
+        printMessage(human.getPrintMessage());
+
+        //computerTurn = !computerTurn;
+        //updateTurnView(computerTurn);
+    }
+
     public void updateScore(int hScore, int cScore, boolean isComputer) {
         TextView tempView = (TextView) findViewById(R.id.humanScore);
         tempView.setText(hScore+"");
@@ -312,6 +333,20 @@ public class GamePlay extends AppCompatActivity {
 
         tempView = findViewInTable(newPos);
         tempView.setText(board.getDiceAt(newPos).getValue());
+        tempView.setBackgroundColor(MOVE_INDICATOR_COLOR);
+        tempView.startAnimation(anim);
+        newView = tempView;
+    }
+
+    public void updateHelpView(Coordinates oldPos, Coordinates newPos) {
+        TextView tempView = findViewInTable(oldPos);
+        //tempView.setText("");
+        tempView.setBackgroundColor(MOVE_INDICATOR_COLOR);
+        tempView.startAnimation(anim);
+        prevView = tempView;
+
+        tempView = findViewInTable(newPos);
+        //tempView.setText(board.getDiceAt(newPos).getValue());
         tempView.setBackgroundColor(MOVE_INDICATOR_COLOR);
         tempView.startAnimation(anim);
         newView = tempView;

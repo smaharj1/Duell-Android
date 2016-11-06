@@ -175,5 +175,12 @@
         android:id="@+id/save"
         android:onClick="saveGame" />
 
+    <Button
+        android:text="Help me Bot God"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/help"
+        android:onClick="getHelp" />
+
 
 </LinearLayout>
