@@ -154,6 +154,18 @@ public class GamePlay extends AppCompatActivity {
         Coordinates movingCoord = human.getPrevCoordinates();
         Coordinates newCoord = human.getNewCoordinates();
 
+        RadioGroup rg = (RadioGroup) findViewById(R.id.dicectionChoice);
+        if (human.isBothDirectionPossible()) {
+            for(int i = 0; i < rg.getChildCount(); i++){
+                ((RadioButton)rg.getChildAt(i)).setEnabled(true);
+            }
+        }
+        else {
+            for(int i = 0; i < rg.getChildCount(); i++){
+                ((RadioButton)rg.getChildAt(i)).setEnabled(false);
+            }
+        }
+
         updateHelpView(movingCoord, newCoord);
 
         printMessage(human.getPrintMessage());
@@ -213,6 +225,11 @@ public class GamePlay extends AppCompatActivity {
             Coordinates clickedPosition = (Coordinates) v.getTag();
             //Log.v("OLA: " , "Clicked pos: " + clickedPosition.getRow() + " " + clickedPosition.getCol());
             Dice diceClicked = board.getDiceAt(clickedPosition);
+            RadioGroup directionClicked = (RadioGroup) findViewById(R.id.dicectionChoice);
+
+            for(int i = 0; i < directionClicked.getChildCount(); i++){
+                ((RadioButton)directionClicked.getChildAt(i)).setEnabled(true);
+            }
 
 
             if (computerTurn) {
@@ -220,7 +237,7 @@ public class GamePlay extends AppCompatActivity {
                 return;
             }
             if (diceClicked == null && selectionMode) {
-                message.setText("You with His Mickey Mouse Tattoos and 33-Pound Head can't see you selected empty box? - The Rock");
+                message.setText("You with His Mickey Mouse Tattoos and 33-Pound Head can't see you selected empty box? - The Rock \n Click a tile with something in it.");
                 return;
             }
 
@@ -263,6 +280,7 @@ public class GamePlay extends AppCompatActivity {
                 printMessage(human.getPrintMessage());
 
                 selectionMode = !selectionMode;
+                resetOptions();
             }
 
         }
@@ -277,6 +295,12 @@ public class GamePlay extends AppCompatActivity {
         else {
             player.setText(HUMAN_TURN);
         }
+    }
+
+    private void resetOptions() {
+        RadioGroup directionClicked = (RadioGroup) findViewById(R.id.dicectionChoice);
+        directionClicked.clearCheck();
+
     }
 
     private char getChosenDirection(Coordinates old, Coordinates newC, boolean[] directions) {

@@ -13,6 +13,7 @@ public class Player {
     protected Coordinates newCoordinates;
     protected boolean playerWon = false;
     protected char direction;
+    protected boolean bothDirectionPossible;
 
     protected ArrayList<TreeNode> opponentPlayer;
     protected ArrayList<TreeNode> currentPlayer;
@@ -24,6 +25,7 @@ public class Player {
         opponentPlayer = new ArrayList<>();
         currentPlayer = new ArrayList<>();
         direction = 'f';
+        bothDirectionPossible = true;
     }
 
     public void play() {
@@ -51,13 +53,16 @@ public class Player {
     protected void safeOffenceMove() {
         nullifySuggestions();
 
+
         for (int row = board.getTotalRows() - 1; row >= 0; row--) {
             for (int col = 0; col < board.getTotalColumns(); col++) {
                 // Check if any opponent player nodes can reach this location.
                 // If yes, then move on. If no, then check if current player can move their dice to this location.
-                if (!canReachLocation(opponentPlayer, row, col)) {
-                    if (canReachLocation(currentPlayer, row, col)) {
-                        // At this point, the suggested move and location will already have been set.
+                if (canReachLocation(opponentPlayer, row, col) == null) {
+                    TreeNode temp = canReachLocation(currentPlayer, row, col);
+                    if (temp != null ) {
+                        prevCoordinates = temp.getCoordinates();
+                        newCoordinates = new Coordinates(row, col);
                         return;
                     }
                 }
@@ -65,23 +70,25 @@ public class Player {
         }
     }
 
-    protected boolean canReachLocation(ArrayList<TreeNode> playerNodes, int row, int col) {
+    protected TreeNode canReachLocation(ArrayList<TreeNode> playerNodes, int row, int col) {
         nullifySuggestions();
+
+        boolean isComputer = playerNodes.get(0).getDice().isPlayerComputer();
 
         // Checks if the location can be reached by the given tree nodes.
         for (int index = 0; index < playerNodes.size(); index++) {
             TreeNode tempNode = playerNodes.get(index);
-
             boolean[] tempDirection = {true, true};
-            if (board.isPathGood(tempNode.getCoordinates(), new Coordinates(row, col), tempDirection)) {
-                prevCoordinates = tempNode.getCoordinates();
-                newCoordinates = new Coordinates(row, col);
-                return true;
+            if (board.isPathGood(tempNode.getCoordinates(), new Coordinates(row, col), tempDirection) && board.isLegal(tempNode.getCoordinates(),new Coordinates(row, col),isComputer)) {
+                //prevCoordinates = tempNode.getCoordinates();
+                //newCoordinates = new Coordinates(row, col);
+                System.out.println("This is good");
+                return tempNode;
             }
         }
 
         // Returns false if the location cannot be reached.
-        return false;
+        return null;
     }
 
     protected boolean canEatOpponent() {
@@ -134,6 +141,10 @@ public class Player {
 
         // Returns false if it cannot eat the dice.
         return false;
+    }
+
+    public boolean isBothDirectionPossible() {
+        return bothDirectionPossible;
     }
 
     protected TreeNode isKingInThreat() {

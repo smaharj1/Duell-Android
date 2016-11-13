@@ -16,7 +16,6 @@ public class Human extends Player {
         prevCoordinates = from;
         newCoordinates = to;
         direction = dir;
-        System.out.println("TO: " + to.getRow());
 
         boolean[] directions = {true, true};
 
@@ -56,13 +55,13 @@ public class Human extends Player {
             TreeNode threat = isKingInThreat();
             if (threat != null) {
                 if (canEatThreat(threat)){
-                    printMessage = "You Cant See Me - John Cena";
+                    printMessage = "Move the die indicated to remove the threat. ";
                     movePossible = true;
                 }
                 else {
                     // Blocks the move if possible.
                     if (blockMove(threat)) {
-                        printMessage = "Threat detected";
+                        printMessage = "Move the indicated die to block. ";
                         movePossible = true;
                     }
                 }
@@ -70,7 +69,7 @@ public class Human extends Player {
             else {
                 // Executes if there is not threat to the king.
                 if (canEatOpponent()) {
-                    printMessage = "YOU WANT SOME? COME GET SOME! - John Cena";
+                    printMessage = "Move the die indicated to eat my players. ";
 
                     movePossible = true;
                 }
@@ -80,7 +79,7 @@ public class Human extends Player {
         if (!movePossible) {
             // Just make a general move that gets you closer to the king.
             safeOffenceMove();
-            printMessage = "Just playing offense";
+            printMessage = "There are no possible preys for you. Just move this safe one. ";
         }
 
 
@@ -93,16 +92,23 @@ public class Human extends Player {
         // Checks if the path is good.
         board.isPathGood(prevCoordinates, newCoordinates, tempDir);
 
+
+
         if (tempDir[0] == false) {
             direction = 'l';
         }
 
+        if (tempDir[0] && tempDir[1]) {
+            bothDirectionPossible = true;
+        }
+        else bothDirectionPossible = false;
+
         printMessage  = printMessage + " Move your player ";
         if (direction == 'f') {
-            printMessage = printMessage + "frontal first";
+            printMessage = printMessage + "frontal first if direction is enabled";
         }
         else {
-            printMessage = printMessage + "lateral first";
+            printMessage = printMessage + "lateral first if direction is enabled";
         }
 
     }
