@@ -35,7 +35,7 @@ public class TournamentEndInfo extends AppCompatActivity {
             temp.setText("Better luck next time. You lost the tournament");
         }
         else {
-            temp.setText("It's a draw!");
+            temp.setText("The tournament is a draw!");
         }
 
 

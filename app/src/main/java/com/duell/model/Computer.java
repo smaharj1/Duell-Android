@@ -22,7 +22,8 @@ public class Computer extends Player {
         boolean movePossible = false;
 
         if (canWin()) {
-            printMessage = "The Best There Is, The Best There Was and The Best There Ever Will Be - Bret Hart";
+            printMessage = "The Best There Is, The Best There Was and The Best There Ever Will Be - Bret Hart \n";
+            printMessage += "Moved " + board.getDiceAt(prevCoordinates.getRow(), prevCoordinates.getCol()).getValue() + " to the location highlighted to win the game.";
             movePossible = true;
             playerWon = true;
         }
@@ -30,13 +31,15 @@ public class Computer extends Player {
             TreeNode threat = isKingInThreat();
             if (threat != null) {
                 if (canEatThreat(threat)){
-                    printMessage = "You Cant See Me - John Cena";
+                    printMessage = "You Cant See Me - John Cena\n";
+                    printMessage += "Moved "+ board.getDiceAt(prevCoordinates.getRow(), prevCoordinates.getCol()).getValue() + " to the location to indicated to eat the threat.";
                     movePossible = true;
                 }
                 else {
                     // Blocks the move if possible.
                     if (blockMove(threat)) {
-                        printMessage = "Threat has been blocked";
+                        printMessage = "Threat has been blocked\n";
+                        printMessage += "Moved "+ board.getDiceAt(prevCoordinates.getRow(), prevCoordinates.getCol()).getValue() + " to the location to indicated to block from eating the king.";
                         movePossible = true;
                     }
                 }
@@ -44,8 +47,8 @@ public class Computer extends Player {
             else {
                 // Executes if there is not threat to the king.
                 if (canEatOpponent()) {
-                    printMessage = "YOU WANT SOME? COME GET SOME! - John Cena";
-
+                    printMessage = "YOU WANT SOME? COME GET SOME! - John Cena\n ";
+                    printMessage += "Moved "+ board.getDiceAt(prevCoordinates.getRow(), prevCoordinates.getCol()).getValue() + " to the location to eat the opponent's player.";
                     movePossible = true;
                 }
             }
@@ -54,7 +57,7 @@ public class Computer extends Player {
         if (!movePossible) {
             // Just make a general move that gets you closer to the king.
             safeOffenceMove();
-            printMessage = "Just playing offense";
+            printMessage += "Moved "+ board.getDiceAt(prevCoordinates.getRow(), prevCoordinates.getCol()).getValue() + " to the location to play offense.";
         }
 
 
