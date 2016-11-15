@@ -28,14 +28,19 @@ public class TournamentEndInfo extends AppCompatActivity {
         temp.setText(computerScore+"");
 
         temp = (TextView) findViewById(R.id.winner);
-        if (humanScore > computerScore) {
-            temp.setText("Congratulations! You won the tournament!");
-        }
-        else if (humanScore < computerScore) {
-            temp.setText("Better luck next time. You lost the tournament");
+
+        String saveGame = getIntent().getStringExtra(AppLauncher.MESSAGE_SAVE);
+        if (saveGame.equalsIgnoreCase("yes")) {
+
         }
         else {
-            temp.setText("The tournament is a draw!");
+            if (humanScore > computerScore) {
+                temp.setText("Congratulations! You won the tournament!");
+            } else if (humanScore < computerScore) {
+                temp.setText("Better luck next time. You lost the tournament");
+            } else {
+                temp.setText("The tournament is a draw!");
+            }
         }
 
 
@@ -44,6 +49,7 @@ public class TournamentEndInfo extends AppCompatActivity {
     }
 
     public void exitGame(View view) {
+        finish();
         System.exit(0);
     }
 }

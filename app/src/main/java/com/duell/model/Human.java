@@ -34,6 +34,13 @@ public class Human extends Player {
             board.move(prevCoordinates, newCoordinates, direction);
             printMessage = "That's a sleek move";
 
+            if (direction == 'f') {
+                printMessage+= "\n It moved frontally first.";
+            }
+            else {
+                printMessage += "\n It moved laterally first.";
+            }
+
             return true;
         }
 

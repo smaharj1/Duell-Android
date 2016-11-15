@@ -74,6 +74,12 @@ public class Computer extends Player {
         }
 
         board.move(prevCoordinates, newCoordinates,direction);
+        if (direction == 'f'){
+            printMessage += "\n It moved frontally first.";
+        }
+        else {
+            printMessage += "\n It moved laterally first.";
+        }
 
     }
 

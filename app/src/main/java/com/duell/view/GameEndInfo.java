@@ -109,6 +109,7 @@ public class GameEndInfo extends AppCompatActivity {
                                             intent.putExtra(AppLauncher.MESSAGE_TURN, "human");
                                         }
                                         intent.putExtra(AppLauncher.MESSAGE_GAME, "new");
+                                        finish();
                                         startActivity(intent);
                                     }
                                 });
@@ -131,7 +132,9 @@ public class GameEndInfo extends AppCompatActivity {
         Intent intent = new Intent(getApplicationContext(), TournamentEndInfo.class);
         intent.putExtra(AppLauncher.MESSAGE_COMPUTERSCORE, computerScore+"");
         intent.putExtra(AppLauncher.MESSAGE_HUMANSCORE,humanScore+"");
+        intent.putExtra(AppLauncher.MESSAGE_SAVE, "no");
 
+        finish();
         startActivity(intent);
 
     }

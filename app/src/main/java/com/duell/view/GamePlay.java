@@ -1,13 +1,19 @@
 package com.duell.view;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.SystemClock;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TableLayout;
@@ -111,15 +117,45 @@ public class GamePlay extends AppCompatActivity {
 
     public void saveGame(View view) {
 
-        try {
-            fileHandler.saveGame(filename,board,computerTurn,computerScore,humanScore);
+        // Creates the dialog box for allowing user to select which file to open. User does not have to input the extension
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        builder.setView(inflater.inflate(R.layout.check, null));
+        builder.setMessage("Please enter the file name");
+        builder.setNeutralButton("NEXT", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Dialog d = (Dialog) dialog;
 
-            endTournament();
+                EditText file = (EditText) d.findViewById(R.id.filename);
+                String filename = file.getText().toString();
+
+                try {
+                    fileHandler.saveGame(filename, board, computerTurn,computerScore, humanScore);
+                    endTournament();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        });
 
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        builder.create().show();
+
+//
+//
+//
+//        try {
+//
+//            fileHandler.saveGame(filename,board,computerTurn,computerScore,humanScore);
+//
+//            endTournament();
+//
+//
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
     }
 
     public void endGame(boolean computerWon) {
@@ -130,14 +166,18 @@ public class GamePlay extends AppCompatActivity {
         String winner = computerWon ? "computer" : "human";
         intent.putExtra(AppLauncher.MESSAGE_WINNER, winner);
 
+        //SystemClock.sleep(3000);
+        finish();
+
         startActivity(intent);
     }
 
     private void endTournament() {
         Intent intent = new Intent(getApplicationContext(), TournamentEndInfo.class);
         intent.putExtra(AppLauncher.MESSAGE_COMPUTERSCORE, computerScore+"");
+        intent.putExtra(AppLauncher.MESSAGE_SAVE, "yes");
         intent.putExtra(AppLauncher.MESSAGE_HUMANSCORE,humanScore+"");
-
+        finish();
         startActivity(intent);
     }
 
@@ -208,6 +248,8 @@ public class GamePlay extends AppCompatActivity {
 
         if (computer.playerWins()) {
             computerScore++;
+
+
             endGame(true);
         }
 
