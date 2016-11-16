@@ -1,3 +1,9 @@
+/************************************************************
+ * Name:  Sujil Maharjan                                    *
+ * Project : Project 2, Duell game                          *
+ * Class : Organization of Programming Language(CMPS 366-01)*
+ * Date : 11-15-2016                                         *
+ ************************************************************/
 package com.duell.model;
 
 import android.util.Log;
@@ -6,17 +12,25 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
- * Created by Sujil on 10/30/2016.
+ * This class holds the board of the game. It performs various funcitonalities regarding modifications
+ * to the board.
  */
 
 public class Board {
+    // Defines the constants for total row and columns.
     private final int TOTAL_ROWS = 8;
     private final int TOTAL_COLUMNS = 9;
 
+    // Determines if the player mode is god mode.
     private boolean isGodMode = false;
 
+    // Holds the board for the game.
     private Dice board[][] = new Dice[TOTAL_ROWS][TOTAL_COLUMNS];
 
+    /**
+     * Constructor that initiates the values of the board.
+     * @param keys Arrays that consists of key dices of the player.
+     */
     public Board(int[] keys) {
         // Goes through the whole board of cell and initializes the board.
         for (int i = 0; i < TOTAL_ROWS; i++) {
@@ -39,6 +53,9 @@ public class Board {
         //isGodMode = false;
     }
 
+    /**
+     * Default constructor that sets the board to default values.
+     */
     public Board() {
         // Goes through the whole board of cell and initializes the board.
         for (int i = 0; i < TOTAL_ROWS; i++) {
@@ -59,10 +76,19 @@ public class Board {
         //isGodMode = false;
     }
 
+    /**
+     * Computes and returns a Dice object when the top, index and if computer is provided.
+     * @param top It holds the top face of the die.
+     * @param index It holds the index of the die of a player.
+     * @param isComputer It holds if the die is a computer's die or human's.
+     * @return Returns Dice object after the computation.
+     */
     public Dice computeDice(int top, int index, boolean isComputer) {
+        // Sets the right die to 3. It is constant in the beginning.
         int right = 3;
         int front = Dice.computeFrontFace(top,right);
 
+        // Checks if the die is the mid point. If it is, set it as king.
         if (index == TOTAL_COLUMNS/2) {
             return new Dice(isComputer,1,1,1);
         }
@@ -71,30 +97,22 @@ public class Board {
         }
     }
 
-    public Board(Dice[] humanInitDices, Dice[] botInitDices) {
-        // Goes through the whole board and initializes the new board according to the dices given.
-        for (int i = 0; i < TOTAL_ROWS; i++) {
-            for (int j = 0; j < TOTAL_COLUMNS; j++) {
-                if (i == 0) {
-                    board[i][j] = botInitDices[j];
-                }
-                else if (i == TOTAL_ROWS - 1) {
-                    board[i][j] = humanInitDices[j];
-                }
-                else {
-                    board[i][j] = null;
-                }
-            }
-        }
-
-        //isGodMode = false;
-    }
-
+    /**
+     * Returns the total number of rows in the board.
+     * @return Returns the total number of rows.
+     */
     public int getTotalRows() { return TOTAL_ROWS;}
+
+    /**
+     * Returns the total number of columns in the board.
+     * @return Returns the total number of columns.
+     */
     public int getTotalColumns() { return TOTAL_COLUMNS;}
 
     /**
-        Sets the board.
+     * Sets the board according to the given values of the string representation of the board.
+     * @param givenBoard It holds the 2D array that holds the values of the board.
+     * @return Returns true if the board is successfully set.
      */
     public boolean setBoard(String[][] givenBoard) {
         // Loops through each cell and stores the dices.
@@ -104,7 +122,7 @@ public class Board {
                     board[i][j] = null;
                 }
                 else {
-                    System.out.println("Board: " + givenBoard[i][j]);
+                    //System.out.println("Board: " + givenBoard[i][j]);
                     board[i][j] = new Dice(givenBoard[i][j]);
                 }
             }
@@ -113,11 +131,16 @@ public class Board {
         return true;
     }
 
-    // Checks if the move is legal in terms of user's turn and who the user is replacing
+
+    /**
+     * Checks if the move is legal in terms of user's turn and who the user is replacing.
+     * @param oldPos It holds the coordinates of old position.
+     * @param newPos It holds the new coordinates that the die has to move to.
+     * @param isPlayerComputer It holds if the player is computer.
+     * @return Returns true if the move indicated is legal.
+     */
     public boolean isLegal(Coordinates oldPos, Coordinates newPos, boolean isPlayerComputer) {
-        //Log.v("OLA-BOARD: ", "Checking for " + getDiceAt(oldPos).getValue());
-
-
+        // Holds the row and column of old and new coordinates.
         int oldRow = oldPos.getRow();
         int oldCol = oldPos.getCol();
         int newRow = newPos.getRow();
@@ -150,7 +173,14 @@ public class Board {
         return true;
     }
 
+    /**
+     * Returns all the coordinates of the path from one coordinate to another if there are no hindrances.
+     * @param from It holds the starting coordinates.
+     * @param to It holds the ending coordinates.
+     * @return Returns the arraylist of coordinates that the die moves through to reach the destination.
+     */
     public ArrayList<Coordinates> getPathCoordinates(Coordinates from, Coordinates to) {
+        // Initialization of directions and the answer arraylist.
         boolean[] directions = {true, true};
         ArrayList<Coordinates> pathCoordinates = new ArrayList<>();
 
@@ -159,15 +189,12 @@ public class Board {
         int row2 = to.getRow();
         int col2 = to.getCol();
 
+        // Checks if the path is good. If it is, then go through each path and record the location.
         if (isPathGood(from, to, directions)) {
 
             if (directions[0] == true) {
                 // This is when frontal is first
                 if (row1 < row2) {
-//                    for (int i = row2-1; i >= row1; i--) {
-//                        if (col1 == col2 && i == row1) continue;
-//                        pathCoordinates.add(new Coordinates(i,col2));
-//                    }
                     for (int i = row1+1; i <=row2; i++) {
                         if (col1 == col2 && i == row2) continue;
                         pathCoordinates.add(new Coordinates(i,col1));
@@ -181,9 +208,6 @@ public class Board {
                 }
 
                 if (col1 < col2) {
-//                    for (int i =col2-1; i>col1; i--) {
-//                        pathCoordinates.add(new Coordinates(row1, i));
-//                    }
                     for (int i =col1+1; i<col2; i++) {
                         pathCoordinates.add(new Coordinates(row2, i));
                     }
@@ -225,35 +249,32 @@ public class Board {
 
         }
 
+        // Returns the path coordinates.
         return pathCoordinates;
 
 
     }
 
-    public boolean bothPathPossible(Coordinates oldPos, Coordinates newPos) {
-        int oldRow = oldPos.getRow();
-        int oldCol = oldPos.getCol();
-        int newRow = newPos.getRow();
-        int newCol = newPos.getCol();
 
-        int rowDiff = Math.abs(oldRow-newRow);
-        int colDiff = Math.abs(oldCol - newCol);
-
-        if (rowDiff == 0 || colDiff == 0) return false;
-        return true;
-    }
-
-
-    //To check if the path is good. It checks if there are any distractions on the way.
+    /**
+     * Checks if the path is good. It checks if there are any hindrances on the way.
+     * @param oldPos It holds the old position of the die.
+     * @param newPos It holds the new position of the die.
+     * @param correctPaths It holds the possibilities of paths if frontal first and lateral first.
+     * @return Returns true if the path is legal and allowed.
+     */
     public boolean isPathGood(Coordinates oldPos, Coordinates newPos, boolean[] correctPaths) {
+        // Initializes the row and columns.
         int oldRow = oldPos.getRow();
         int oldCol = oldPos.getCol();
         int newRow = newPos.getRow();
         int newCol = newPos.getCol();
 
+        // Computes the total frontal and side movement needed.
         int frontal = newRow - oldRow;
         int side = newCol - oldCol;
 
+        // Checks if the board's old position is empty. If it is empty, then return false.
         if (board[oldRow][oldCol] == null) {
             return false;
         }
@@ -332,6 +353,13 @@ public class Board {
         return correctPaths[0] || correctPaths[1];
     }
 
+    /**
+     * Moves the die from one coordinate to another.
+     * @param oldPos It holds the old coordinates of the die.
+     * @param newPos It holds the new coordinates of the die.
+     * @param direction It holds the direction that we want to move to.
+     * @return Returns a dice if it eats any die during the movement. Returns null if nothing is eaten.
+     */
     public Dice move(Coordinates oldPos, Coordinates newPos, char direction) {
         int oldRow = oldPos.getRow();
         int oldCol = oldPos.getCol();
@@ -452,12 +480,23 @@ public class Board {
         return diceAte;
     }
 
+    /**
+     * Returns the dice at the position specified.
+     * @param given It holds the coordinates of the board.
+     * @return Returns the dice at the coordinates specified.
+     */
     public Dice getDiceAt(Coordinates given) {
         if (board[given.getRow()][given.getCol()] == null) return null;
 
         return board[given.getRow()][given.getCol()];
     }
 
+    /**
+     * Returns the dice at the position specified.
+     * @param row It holds the row number.
+     * @param col It holds the column number.
+     * @return Returns the dice at the coordinates specified.
+     */
     public Dice getDiceAt(int row, int col) {
         if (board[row][col] == null) return null;
 

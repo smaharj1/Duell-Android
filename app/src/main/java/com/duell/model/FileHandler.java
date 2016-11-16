@@ -1,3 +1,9 @@
+/************************************************************
+ * Name:  Sujil Maharjan                                    *
+ * Project : Project 2, Duell game                          *
+ * Class : Organization of Programming Language(CMPS 366-01)*
+ * Date : 11-15-2016                                         *
+ ************************************************************/
 package com.duell.model;
 
 import android.content.Context;
@@ -19,17 +25,21 @@ import android.os.Environment;
 import com.duell.R;
 
 /**
- * Created by Sujil on 10/31/2016.
+ * This class performs all the file related performances. It saves and loads the game.
  */
 
 public class FileHandler {
-
+    // Private variables that holds the important information from the files.
     private Board loadedBoard;
     private boolean isComputerTurn;
     private int computerScore;
     private int humanScore;
     private Context context;
 
+    /**
+     * Default constructor.
+     * @param appContext It holds the application context.
+     */
     public FileHandler(Context appContext) {
         loadedBoard = new Board();
         isComputerTurn = true;
@@ -38,17 +48,44 @@ public class FileHandler {
         context = appContext;
     }
 
+    /**
+     * It returns the Board object.
+     * @return Returns the board object.
+     */
     public Board getBoard() {
         return loadedBoard;
     }
 
+    /**
+     * Returns if it is computer's turn.
+     * @return Returns if it is computer's turn.
+     */
     public boolean getIfComputerTurn() {
         return isComputerTurn;
     }
 
+    /**
+     * Returns the computer's score.
+     * @return Returns the computer's score.
+     */
     public int getComputerScore() { return computerScore;}
+
+    /**
+     * Returns the human score.
+     * @return Returns the human score.
+     */
     public int getHumanScore() { return humanScore;}
 
+    /**
+     * Saves the game to the desired name in the SD card.
+     * @param filename It holds the file name without the extension.
+     * @param givenBoard It holds the board.
+     * @param isComputer It holds if it is computer's turn.
+     * @param botScore It holds computer score.
+     * @param hScore It holds human score.
+     * @return returns true if successfully saved.
+     * @throws FileNotFoundException
+     */
     public boolean saveGame(String filename, Board givenBoard, boolean isComputer, int botScore, int hScore) throws FileNotFoundException {
         File file = new File(Environment.getExternalStorageDirectory(), filename+".txt");
 
@@ -56,6 +93,7 @@ public class FileHandler {
 
         FileOutputStream outStream = new FileOutputStream(file);
 
+        // Write the information to the file.
         try {
             outStream.write("Board:\n".getBytes());
             for (int i =0; i < givenBoard.getTotalRows(); i++) {
@@ -98,6 +136,11 @@ public class FileHandler {
         return true;
     }
 
+    /**
+     * Opens the game from the file name given.
+     * @param filename It holds the naem of the file.
+     * @return Returns true if the file is opened.
+     */
     public boolean openGame(String filename) {
         String result = "";
         result = readFromFile(filename);
@@ -106,6 +149,7 @@ public class FileHandler {
         String[][] board = new String[8][9];
 
         int index = 0;
+        // Iterates through every line and parses it to correct information.
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
             if (index == 0) {

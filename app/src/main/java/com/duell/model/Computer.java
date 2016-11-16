@@ -1,26 +1,38 @@
+/************************************************************
+ * Name:  Sujil Maharjan                                    *
+ * Project : Project 2, Duell game                          *
+ * Class : Organization of Programming Language(CMPS 366-01)*
+ * Date : 11-15-2016                                         *
+ ************************************************************/
 package com.duell.model;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 /**
- * Created by Sujil on 10/31/2016.
+ * This class makes the movement for computer. It plays the move and algo performs the algorithmic movement.
  */
 
 public class Computer extends Player {
 
-
-
+    /**
+     * Default constructor that just calls the super class's constructor.
+     * @param board It holds the Board object.
+     */
     public Computer(Board board) {
         super(board);
-
     }
 
+    /**
+     * Plays the computer's move and records the old and new coordinates.
+     */
     @Override
     public void play() {
+        // Reset the players because there are changes in the board every time.
         refreshPlayers();
         boolean movePossible = false;
 
+        // Checks if the computer can win. If yes, then win.
         if (canWin()) {
             printMessage = "The Best There Is, The Best There Was and The Best There Ever Will Be - Bret Hart \n";
             printMessage += "Moved " + board.getDiceAt(prevCoordinates.getRow(), prevCoordinates.getCol()).getValue() + " to the location highlighted to win the game.";
@@ -28,6 +40,8 @@ public class Computer extends Player {
             playerWon = true;
         }
         else {
+            // Checks if the king is in threat. If yes, try to eat the threat. If no, block the threat's
+            // path.
             TreeNode threat = isKingInThreat();
             if (threat != null) {
                 if (canEatThreat(threat)){
@@ -54,13 +68,12 @@ public class Computer extends Player {
             }
         }
 
+        // If any attacking moves are not possible, just make an offensive move.
         if (!movePossible) {
             // Just make a general move that gets you closer to the king.
             safeOffenceMove();
             printMessage += "Moved "+ board.getDiceAt(prevCoordinates.getRow(), prevCoordinates.getCol()).getValue() + " to the location to play offense.";
         }
-
-
 
         // Temporarily creates an array of directions to call the main board function.
         boolean[] tempDir = {true, true};
@@ -73,6 +86,7 @@ public class Computer extends Player {
             direction = 'l';
         }
 
+        // Moves the die on the board.
         board.move(prevCoordinates, newCoordinates,direction);
         if (direction == 'f'){
             printMessage += "\n It moved frontally first.";

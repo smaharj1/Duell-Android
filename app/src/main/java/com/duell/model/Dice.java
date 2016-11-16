@@ -1,12 +1,17 @@
+/************************************************************
+ * Name:  Sujil Maharjan                                    *
+ * Project : Project 2, Duell game                          *
+ * Class : Organization of Programming Language(CMPS 366-01)*
+ * Date : 11-15-2016                                         *
+ ************************************************************/
 package com.duell.model;
 
-import android.util.Log;
-
 /**
- * Created by Sujil on 10/30/2016.
+ * This class holds the die and all the computations needed for the die.
  */
 
 public class Dice {
+    // Declares the variables for die.
     private boolean isComputer;
     private boolean isKing;
     private int top;
@@ -14,6 +19,10 @@ public class Dice {
     private int front;
     private boolean isKilled;
 
+    /**
+     * Default constructor for the die.
+     * @param given It holds the string representation fo the die.
+     */
     public Dice(String given) {
         // Find the top and right from the given string.
         top = given.charAt(1)-'0';
@@ -35,6 +44,13 @@ public class Dice {
         isKilled = false;
     }
 
+    /**
+     * Constructor with more information from parameter.
+     * @param isComputer It holds if it is computer's die.
+     * @param t It holds the top face of the die.
+     * @param f It holds the front face of the die.
+     * @param r It holds the right face of the die.
+     */
     public Dice (boolean isComputer, int t, int f, int r) {
         this.isComputer = isComputer;
 
@@ -52,6 +68,9 @@ public class Dice {
         isKilled = false;
     }
 
+    /**
+     * Rolls the die left.
+     */
     public void moveLeft() {
         if (!isKing) {
             int tmp = top;
@@ -60,6 +79,9 @@ public class Dice {
         }
     }
 
+    /**
+     * Rolls the die right.
+     */
     public void moveRight() {
         if (!isKing) {
             int tmp = top;
@@ -68,6 +90,9 @@ public class Dice {
         }
     }
 
+    /**
+     * Rolls the die forward.
+     */
     public void moveForward() {
         if (!isKing) {
             int tmp = top;
@@ -76,6 +101,9 @@ public class Dice {
         }
     }
 
+    /**
+     * Rolls the die backward.
+     */
     public void moveBackward() {
         if (!isKing) {
             int tmp = top;
@@ -84,6 +112,10 @@ public class Dice {
         }
     }
 
+    /**
+     * Returns the value of the die.
+     * @return Returns the value of the die.
+     */
     public String getValue() {
         if (isComputer) {
             return "C" + getTop() + getRight();
@@ -92,12 +124,24 @@ public class Dice {
         return "H" + getTop() + getRight();
     }
 
+    /**
+     * Gets the top face.
+     * @return Returns the top face.
+     */
     public int getTop() { return top;}
 
+    /**
+     * Gets the right face.
+     * @return Gets the right face.
+     */
     public int getRight() { return right;}
 
-    public int getFront() { return front;}
-
+    /**
+     * Computes the front face if the top and right face are given.
+     * @param top It holds the top face.
+     * @param right It holds the right face.
+     * @return Returns the front face calculated.
+     */
     public static int computeFrontFace(int top, int right) {
         // It holds the total possible rolls.
         int[][] roles = { { 3,1,4,6,3,1,4,6 },{ 1,2,6,5,1,2,6,5 },{ 2,3,5,4,2,3,5,4 } };
@@ -150,14 +194,26 @@ public class Dice {
         return front;
     }
 
+    /**
+     * Returns if the player is king.
+     * @return Returns true if the player is king.
+     */
     public boolean isPlayerKing() {
         return isKing;
     }
 
+    /**
+     * Returns if the player is computer.
+     * @return Returns if the player is computer.
+     */
     public boolean isPlayerComputer() {
         return isComputer;
     }
 
+    /**
+     * Sets the dice as king.
+     * @return Returns true if successfully set.
+     */
     public boolean setKing() {
         top = 1;
         right = 1;
@@ -167,9 +223,4 @@ public class Dice {
         return true;
     }
 
-    public boolean setKilled() {
-        isKilled = true;
-
-        return true;
-    }
 }
