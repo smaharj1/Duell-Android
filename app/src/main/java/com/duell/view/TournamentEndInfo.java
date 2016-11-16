@@ -1,3 +1,9 @@
+/************************************************************
+ * Name:  Sujil Maharjan                                    *
+ * Project : Project 2, Duell game                          *
+ * Class : Organization of Programming Language(CMPS 366-01)*
+ * Date : 11-15-2016                                         *
+ ************************************************************/
 package com.duell.view;
 
 import android.support.v7.app.AppCompatActivity;
@@ -8,6 +14,9 @@ import android.widget.TextView;
 import com.duell.R;
 import com.duell.view.AppLauncher;
 
+/**
+ * This class is the end controller. It occurs at the end of the whole game.
+ */
 public class TournamentEndInfo extends AppCompatActivity {
     private int humanScore = 0;
     private int computerScore = 0;
@@ -17,6 +26,7 @@ public class TournamentEndInfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tournament_end_info);
 
+        // Gets the required information from the user.
         if (getIntent().getStringExtra(AppLauncher.MESSAGE_COMPUTERSCORE) != null) {
             computerScore = Integer.parseInt(getIntent().getStringExtra(AppLauncher.MESSAGE_COMPUTERSCORE));
         }
@@ -48,6 +58,10 @@ public class TournamentEndInfo extends AppCompatActivity {
         temp.setText(humanScore+"");
     }
 
+    /**
+     * Exits the application.
+     * @param view
+     */
     public void exitGame(View view) {
         finish();
         System.exit(0);

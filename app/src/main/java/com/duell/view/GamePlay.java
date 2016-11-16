@@ -1,3 +1,9 @@
+/************************************************************
+ * Name:  Sujil Maharjan                                    *
+ * Project : Project 2, Duell game                          *
+ * Class : Organization of Programming Language(CMPS 366-01)*
+ * Date : 11-15-2016                                         *
+ ************************************************************/
 package com.duell.view;
 
 import android.app.Dialog;
@@ -31,7 +37,11 @@ import com.duell.model.Player;
 
 import java.io.FileNotFoundException;
 
+/**
+ * This class is a Game Controller class that serves as the controller between UI and the model.
+ */
 public class GamePlay extends AppCompatActivity {
+    // Holds the constants defining the colors and several default values.
     private final int DEFAULT_COLOR = Color.parseColor("#FCEBB6");
     private final int SELECTED_COLOR = Color.parseColor("#D3D3D3");
     private final int MOVE_INDICATOR_COLOR = Color.parseColor("#f0a830");
@@ -41,16 +51,15 @@ public class GamePlay extends AppCompatActivity {
     private final String COMPUTER_TURN = "Computer";
     private final String HUMAN_TURN = "You";
 
-
-    private final String filename = "savedGame";
-
     private Board board;
 
+    // Coordinates that are input by the user.
     private boolean selectionMode = true;
     private Coordinates inputCoordinates;
     private Coordinates desiredCoordinates;
     private boolean computerTurn = false;
 
+    // View variables.
     private TextView message;
     private View prevView;
     private View newView;
@@ -67,6 +76,10 @@ public class GamePlay extends AppCompatActivity {
 
     FileHandler fileHandler;
 
+    /**
+     * This runs when the activity starts.
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,9 +90,12 @@ public class GamePlay extends AppCompatActivity {
 
         String gameType = getIntent().getStringExtra(AppLauncher.MESSAGE_GAME);
 
+        // Checks if the user wants to play a new game or load a game.
         if (gameType.equalsIgnoreCase("new")) {
             // Set up the board.
             int[] initialKeys = { 5, 1, 2, 6, 1, 6, 2, 1, 5 };
+
+            // Initializes the board, human and computer scores.
             board = new Board(initialKeys);
             humanScore = Integer.parseInt(getIntent().getStringExtra(AppLauncher.MESSAGE_HUMANSCORE));
             computerScore = Integer.parseInt(getIntent().getStringExtra(AppLauncher.MESSAGE_COMPUTERSCORE));
@@ -92,9 +108,11 @@ public class GamePlay extends AppCompatActivity {
             }
             else computerTurn = true;
 
+            // Updates the scores.
             updateScore(humanScore, computerScore, computerTurn);
         }
         else {
+            // opens the game if the user indicated to open a game.
             fileHandler.openGame(getIntent().getStringExtra(AppLauncher.MESSAGE_FILENAME));
             board = fileHandler.getBoard();
             humanScore = fileHandler.getHumanScore();
@@ -112,12 +130,16 @@ public class GamePlay extends AppCompatActivity {
         computer = new Computer(board);
         human = new Human(board);
 
+        // Initializes the animation.
         initializeAnimation();
     }
 
+    /**
+     * It saves the game and exits the tournament.
+     * @param view It is the view.
+     */
     public void saveGame(View view) {
-
-        // Creates the dialog box for allowing user to select which file to open. User does not have to input the extension
+        // Creates the dialog box for allowing user to select what name the file should have. User does not have to input the extension
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         builder.setView(inflater.inflate(R.layout.check, null));
@@ -143,21 +165,12 @@ public class GamePlay extends AppCompatActivity {
 
         builder.create().show();
 
-//
-//
-//
-//        try {
-//
-//            fileHandler.saveGame(filename,board,computerTurn,computerScore,humanScore);
-//
-//            endTournament();
-//
-//
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
     }
 
+    /**
+     * Ends the game and goes to the tournament activity.
+     * @param computerWon It holds if the game was won by computer.
+     */
     public void endGame(boolean computerWon) {
         Intent intent = new Intent(getApplicationContext(), GameEndInfo.class);
         intent.putExtra(AppLauncher.MESSAGE_HUMANSCORE, String.valueOf(humanScore));
@@ -166,12 +179,14 @@ public class GamePlay extends AppCompatActivity {
         String winner = computerWon ? "computer" : "human";
         intent.putExtra(AppLauncher.MESSAGE_WINNER, winner);
 
-        //SystemClock.sleep(3000);
         finish();
 
         startActivity(intent);
     }
 
+    /**
+     * Ends the tournament and exits to the last screen.
+     */
     private void endTournament() {
         Intent intent = new Intent(getApplicationContext(), TournamentEndInfo.class);
         intent.putExtra(AppLauncher.MESSAGE_COMPUTERSCORE, computerScore+"");
@@ -181,7 +196,12 @@ public class GamePlay extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * Runs when the user wants help from the computer.
+     * @param view It holds the view object.
+     */
     public void getHelp(View view) {
+        // Check if the user is asking help in their turn.
         if (computerTurn) {
             printMessage("It is not your turn.");
             return;
@@ -189,8 +209,10 @@ public class GamePlay extends AppCompatActivity {
 
         resetSelectionView();
 
+        // Play the human that goes through several algorithms and returns the appropriate suggestion to the user.
         human.play();
 
+        // Assigns the suggested moves.
         Coordinates movingCoord = human.getPrevCoordinates();
         Coordinates newCoord = human.getNewCoordinates();
 
@@ -206,14 +228,22 @@ public class GamePlay extends AppCompatActivity {
             }
         }
 
+        // Updates the help view.
         updateHelpView(movingCoord, newCoord);
 
+        // Prints the appropriate message as to why the move should be made.
         printMessage(human.getPrintMessage());
 
         //computerTurn = !computerTurn;
         //updateTurnView(computerTurn);
     }
 
+    /**
+     * Updates the score in the view.
+     * @param hScore It holds the human score.
+     * @param cScore It holds the bot score.
+     * @param isComputer It holds if it is computer's turn.
+     */
     public void updateScore(int hScore, int cScore, boolean isComputer) {
         TextView tempView = (TextView) findViewById(R.id.humanScore);
         tempView.setText(hScore+"");
@@ -225,7 +255,12 @@ public class GamePlay extends AppCompatActivity {
         tempView.setText(isComputer ? "Computer" : "You");
     }
 
+    /**
+     * Moves the computer.
+     * @param view It is a view object.
+     */
     public void moveComputer(View view) {
+        // Checks if it is computer's turn. If not, return.
         if (!computerTurn) {
             printMessage("It is your turn.");
             return;
@@ -234,11 +269,13 @@ public class GamePlay extends AppCompatActivity {
 
         resetSelectionView();
 
+        // Makes the computer's play.
         computer.play();
 
         Coordinates movingCoord = computer.getPrevCoordinates();
         Coordinates newCoord = computer.getNewCoordinates();
 
+        // Updates the view according to the moves made.
         updateView(movingCoord, newCoord);
 
         computerTurn = !computerTurn;
@@ -246,44 +283,53 @@ public class GamePlay extends AppCompatActivity {
 
         printMessage(computer.getPrintMessage());
 
+        // Checks if the computer won after the move. If yes, then end the game.
         if (computer.playerWins()) {
             computerScore++;
-
-
             endGame(true);
         }
 
     }
 
+    /**
+     * Prints the message.
+     * @param message It holds the message.
+     */
     public void printMessage(String message) {
         TextView mView = (TextView) findViewById(R.id.message);
         mView.setText(message);
     }
 
+    /**
+     * It handles the clicks on the board.
+     */
     public View.OnClickListener computeAction = new View.OnClickListener() {
 
         @Override
         public void onClick(View v) {
+            // Gets the position that the user clicked.
             Coordinates clickedPosition = (Coordinates) v.getTag();
-            //Log.v("OLA: " , "Clicked pos: " + clickedPosition.getRow() + " " + clickedPosition.getCol());
             Dice diceClicked = board.getDiceAt(clickedPosition);
             RadioGroup directionClicked = (RadioGroup) findViewById(R.id.dicectionChoice);
 
+            // Gets the direction clicked and sets it to enabled.
             for(int i = 0; i < directionClicked.getChildCount(); i++){
                 ((RadioButton)directionClicked.getChildAt(i)).setEnabled(true);
             }
 
-
+            // Checks if it is computers turn. If yes, then return.
             if (computerTurn) {
                 message.setText("Not your turn playa!");
                 return;
             }
+
+            // Checks if the user clicked in an empty tile.
             if (diceClicked == null && selectionMode) {
                 message.setText("You with His Mickey Mouse Tattoos and 33-Pound Head can't see you selected empty box? - The Rock \n Click a tile with something in it.");
                 return;
             }
 
-
+            // Checks if it is selection mode. Selection mode means that it is user's first selection.
             if (selectionMode) {
                 resetSelectionView();
                 if (diceClicked != null && diceClicked.isPlayerComputer()) {
@@ -300,7 +346,7 @@ public class GamePlay extends AppCompatActivity {
                 // User places the tile to the specified location.
                 desiredCoordinates = clickedPosition;
 
-                // define directions
+                // Define directions.
                 boolean[] directions = {true, true};
                 char chosenDirection = getChosenDirection(inputCoordinates, desiredCoordinates, directions);
 
@@ -309,7 +355,7 @@ public class GamePlay extends AppCompatActivity {
 
                     updateTurnView(computerTurn);
 
-                    // Update tiles here
+                    // Update tiles here.
                     updateView(inputCoordinates, desiredCoordinates);
 
                     if (human.playerWins()) {
@@ -328,6 +374,10 @@ public class GamePlay extends AppCompatActivity {
         }
     };
 
+    /**
+     * Updates the turn view in the UI.
+     * @param isComputer It holds if it is computer's turn.
+     */
     public void updateTurnView(boolean isComputer) {
         TextView player = (TextView) findViewById(R.id.turn);
 
@@ -339,21 +389,26 @@ public class GamePlay extends AppCompatActivity {
         }
     }
 
+    /**
+     * Resets the options of the direction that user can choose.
+     */
     private void resetOptions() {
         RadioGroup directionClicked = (RadioGroup) findViewById(R.id.dicectionChoice);
         directionClicked.clearCheck();
 
     }
 
+    /**
+     * Returns the direction that the user has chosen.
+     * @param old It holds the old coordinates.
+     * @param newC It holds the coordinates to move to.
+     * @param directions It holds the possible first directions that gets modified.
+     * @return Returns which direction that the user chooses.
+     */
     private char getChosenDirection(Coordinates old, Coordinates newC, boolean[] directions) {
         RadioGroup directionClicked = (RadioGroup) findViewById(R.id.dicectionChoice);
 
-        //if (directions[0] == true && directions[1] == true) {
-            //System.out.println("Both paths are possible");
             if (directionClicked.getCheckedRadioButtonId() == INVALID_SELECTION) {
-                //selectionMode = true;
-                //resetSelectionView();
-                //message.setText("You have not selected the direction you want to move first");
                 return DIRECTION_NOT_CHOSEN;
             }
             else {
@@ -365,13 +420,11 @@ public class GamePlay extends AppCompatActivity {
                 }
                 else return 'f';
             }
-        //}
-
-        // At this point, either lateral or horizontal direction is possible
-        //return directions[0] == true ? 'f' : 'l';
-
     }
 
+    /**
+     * Resets the selection view that was previously greyed out.
+     */
     public void resetSelectionView() {
         if (prevView != null) {
             prevView.setBackgroundColor(DEFAULT_COLOR);
@@ -389,7 +442,11 @@ public class GamePlay extends AppCompatActivity {
         desiredCoordinates = null;
     }
 
-
+    /**
+     * Updates the view by starting the animations.
+     * @param oldPos It holds the previous coordinates.
+     * @param newPos It holds the new coordinates.
+     */
     public void updateView(Coordinates oldPos, Coordinates newPos) {
         TextView tempView = findViewInTable(oldPos);
         tempView.setText("");
@@ -404,6 +461,11 @@ public class GamePlay extends AppCompatActivity {
         newView = tempView;
     }
 
+    /**
+     * Updates the tiles that are suggested by the computer to make movement to.
+     * @param oldPos It holds the old coordinates.
+     * @param newPos It holds the new coordinates.
+     */
     public void updateHelpView(Coordinates oldPos, Coordinates newPos) {
         TextView tempView = findViewInTable(oldPos);
         //tempView.setText("");
@@ -418,7 +480,11 @@ public class GamePlay extends AppCompatActivity {
         newView = tempView;
     }
 
-
+    /**
+     * It finds the view on the board. It returns the actual view of the cell in the table from the display.
+     * @param inputCoordinates It holds the coordinates that the user touched.
+     * @return Returns the TextView of the coordinates selected.
+     */
     private TextView findViewInTable(Coordinates inputCoordinates) {
         TableLayout tableLayout = (TableLayout) findViewById(R.id.givenGrid);
 
@@ -439,7 +505,8 @@ public class GamePlay extends AppCompatActivity {
     }
 
     /**
-     * Makes the table in the board
+     * Makes the table in the baord.
+     * @param board It holds the information of the board.
      */
     public void makeTable(Board board) {
         // Finds the table that we will be working with
@@ -522,7 +589,9 @@ public class GamePlay extends AppCompatActivity {
         colIndexing.addView(row);
     }
 
-
+    /**
+     * It initializes the animation.
+     */
     public void initializeAnimation() {
         // Helps blink the tile
         anim = new AlphaAnimation(0.0f, 1.0f);

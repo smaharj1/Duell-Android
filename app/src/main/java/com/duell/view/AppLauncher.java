@@ -1,3 +1,9 @@
+/************************************************************
+ * Name:  Sujil Maharjan                                    *
+ * Project : Project 2, Duell game                          *
+ * Class : Organization of Programming Language(CMPS 366-01)*
+ * Date : 11-15-2016                                         *
+ ************************************************************/
 package com.duell.view;
 
 import android.app.Dialog;
@@ -15,6 +21,7 @@ import com.duell.R;
 import java.util.Random;
 
 public class AppLauncher extends AppCompatActivity {
+    // Constants that hold information from one activity to another.
     public static final String MESSAGE_TURN = "turn";
     public static final String MESSAGE_GAME = "game";
     public static final String MESSAGE_FILENAME = "filename";
@@ -33,12 +40,21 @@ public class AppLauncher extends AppCompatActivity {
 
     }
 
+    /**
+     * Rolls a die.
+     * @return
+     */
     private int rollDie() {
 
         return random.nextInt(6)+ 1;
     }
 
+    /**
+     * Plays the rolling die game to determine the first player.
+     * @param view It holds the view
+     */
     public void playGame(View view) {
+        // Creates an alert dialog where the game is played once the user selects "ROLL".
         final AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle("Rolling the dice!");
         alertDialog.setMessage("Please click roll to roll the die to choose first player");
