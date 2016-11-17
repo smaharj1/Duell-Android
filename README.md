@@ -63,8 +63,8 @@ If you don't have android studio, it is highly suggested that you download Andro
 
 ##Candid shots
 ![1](https://github.com/smaharj1/Duell-Android/blob/master/images/1.png?raw=true)
-![](https://raw.githubusercontent.com/smaharj1/Duell-Android/blob/master/images/2.png)
-![](https://raw.githubusercontent.com/smaharj1/Duell-Android/blob/master/images/3.png)
-![](https://raw.githubusercontent.com/smaharj1/Duell-Android/blob/master/images/4.png)
-![](https:/raw.githubusercontent.com/smaharj1/Duell-Android/blob/master/images/5.png)
-![](https://raw.githubusercontent.com/smaharj1/Duell-Android/blob/master/images/6.png)
+![2](https://github.com/smaharj1/Duell-Android/blob/master/images/2.png?raw=true)
+![3](https://github.com/smaharj1/Duell-Android/blob/master/images/3.png?raw=true)
+![4](https://github.com/smaharj1/Duell-Android/blob/master/images/4.png?raw=true)
+![5](https://github.com/smaharj1/Duell-Android/blob/master/images/5.png?raw=true)
+![6](https://github.com/smaharj1/Duell-Android/blob/master/images/6.png?raw=true)
