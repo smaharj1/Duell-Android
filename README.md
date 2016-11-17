@@ -62,9 +62,8 @@ b.	If no, then block the path from the opponent to the king.
 If you don't have android studio, it is highly suggested that you download Android Studio. Then, once you have installed Android Studio, go to File --> Open Project --> open the main project.
 
 ##Candid shots
-![1](https://github.com/smaharj1/Duell-Android/blob/master/images/1.png?raw=true =100x300)
-![2](https://github.com/smaharj1/Duell-Android/blob/master/images/2.png?raw=true =100x300)
-![3](https://github.com/smaharj1/Duell-Android/blob/master/images/3.png?raw=true =100x300)
-![4](https://github.com/smaharj1/Duell-Android/blob/master/images/4.png?raw=true =100x300)
-![5](https://github.com/smaharj1/Duell-Android/blob/master/images/5.png?raw=true =100x300)
-![6](https://github.com/smaharj1/Duell-Android/blob/master/images/6.png?raw=true =100x300)
+![1](https://github.com/smaharj1/Duell-Android/blob/master/images/1.png?raw=true =100x270)
+![3](https://github.com/smaharj1/Duell-Android/blob/master/images/3.png?raw=true =100x270)
+![4](https://github.com/smaharj1/Duell-Android/blob/master/images/4.png?raw=true =100x270)
+![5](https://github.com/smaharj1/Duell-Android/blob/master/images/5.png?raw=true =100x270)
+![6](https://github.com/smaharj1/Duell-Android/blob/master/images/6.png?raw=true =100x270)
